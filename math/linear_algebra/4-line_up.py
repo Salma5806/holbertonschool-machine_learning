@@ -8,3 +8,4 @@ def add_arrays(arr1, arr2):
         return None
     else:
         return [i + j for i, j in zip(arr1, arr2)]
+
