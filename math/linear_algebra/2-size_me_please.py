@@ -8,4 +8,3 @@ def matrix_shape(matrix):
         return [len(matrix)]
     else:
         return [len(matrix)] + matrix_shape(matrix[0])
-    
