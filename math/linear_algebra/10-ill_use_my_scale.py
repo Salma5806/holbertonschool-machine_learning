@@ -4,3 +4,4 @@
 def np_shape(matrix):
     """ return the shape of a numpy.ndarray """
     return matrix.shape
+
