@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """  function to add two arrays element-wise """
 
+
 def add_arrays(arr1, arr2):
     """ adding two arrays element wise  """
 
