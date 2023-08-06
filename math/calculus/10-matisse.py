@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-""" function to calculate the derivative of a polynomial """
-
-
-#!/usr/bin/env python3
 """function that derivative a polynomial f(x)"""
 
 
