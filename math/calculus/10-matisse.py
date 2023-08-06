@@ -2,21 +2,25 @@
 """ function to calculate the derivative of a polynomial """
 
 
+#!/usr/bin/env python3
+"""function that derivative a polynomial f(x)"""
+
+
 def poly_derivative(poly):
-    """ polynomial """
-    if not isinstance(poly, list) or not all(isinstance(coeff, (int, float)) for coeff in poly):
+    """function to calculate a derivative of a poly"""
+
+    if type(poly) is not list:
         return None
-
-    n = len(poly)
-    if n == 0:
+    elif not poly:
         return None
-
-    if n == 1:
+    elif len(poly) == 0:
+        return None
+    elif len(poly) == 1:
         return [0]
-
-    derivative = [coeff * (n - i - 1) for i, coeff in enumerate(poly[:-1])]
-
-    if all(coeff == 0 for coeff in derivative):
-        return [0]
-
-    return derivative
+    else:
+        power = [i for i in range(len(poly))]
+        df = [power[x] * poly[x] for x in range(1, len(poly))]
+        if len(list(df)) == 1:
+            return [0]
+        else:
+            return df
