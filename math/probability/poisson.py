@@ -6,7 +6,7 @@ class Poisson:
     """ Calculate a lambtha """
 
     def __init__(self, data=None, lambtha=1.):
-        """ Initialize poisson"""
+        """ Initialize poisson """
         if data is None:
             if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
@@ -18,4 +18,4 @@ class Poisson:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
             else:
-                 self.lambtha = (sum(data) / len(data))
+                self.lambtha = sum(data) / len(data)
