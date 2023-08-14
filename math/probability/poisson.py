@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ Calculate a Poisson distribution """
 
+
 class Poisson:
     """ Calculate a lambtha """
 
@@ -18,6 +19,7 @@ class Poisson:
                 raise ValueError("data must contain multiple values")
             else:
                 self.lambtha = sum(data) / len(data)
+
     def pmf(self, k):
         """ calculates the value of the PMF """
         fact = 1
@@ -26,6 +28,6 @@ class Poisson:
                 self.k = int(k)
             if k < 0:
                 return 0
-            for  k in range(1, k+1):
-                fact = fact * k    
-        return ((self.lambtha ** k) * (2.7182818285 ** -(self.lambtha))) / fact        
+            for  i in range(1, k+1):
+                fact = fact * i
+            return ((self.lambtha ** k) * (2.7182818285 ** -(self.lambtha))) / fact        
