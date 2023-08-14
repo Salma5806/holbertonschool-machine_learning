@@ -22,12 +22,12 @@ class Poisson:
 
     def pmf(self, k):
         """ calculates the value of the PMF """
-        fact = 1
         if k: 
             if type(k) is not int:
                 self.k = int(k)
             if k < 0:
                 return 0
-            for  i in range(1, k+1):
+            fact = 1
+            for  i in range(1, k + 1):
                 fact = fact * i
-            return ((self.lambtha ** k) * (2.7182818285 ** -(self.lambtha))) / fact        
+            return (self.lambtha ** k) * (2.7182818285 ** -self.lambtha) / fact
