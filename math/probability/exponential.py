@@ -19,3 +19,12 @@ class Exponential:
             else:
                 lambtha = float(len(data) / sum(data))
                 self.lambtha = lambtha
+
+    def pdf(self, x):
+        """ calculates the value of the PDF """
+        if x < 0:
+            return 0
+        else:
+            pdf = self.lambtha * (2.7182818285 ** (-self.lambtha * x))
+            return pdf
+
