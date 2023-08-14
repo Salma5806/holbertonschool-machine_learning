@@ -27,3 +27,11 @@ class Exponential:
         else:
             pdf = self.lambtha * (2.7182818285 ** (-self.lambtha * x))
             return pdf
+
+    def cdf(self, x):
+        """ claculates the value of the CDF """
+        if x < 0:
+            return 0
+        else:
+            cdf = 1 - (2.7182818285 ** (-self.lambtha * x))
+            return cdf
