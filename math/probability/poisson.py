@@ -24,7 +24,7 @@ class Poisson:
         """ calculates the value of the PMF """
         if k: 
             if type(k) is not int:
-                self.k = int(k)
+                k = int(k)
             if k < 0:
                 return 0
             fact = 1
