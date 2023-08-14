@@ -27,4 +27,3 @@ class Exponential:
         else:
             pdf = self.lambtha * (2.7182818285 ** (-self.lambtha * x))
             return pdf
-
