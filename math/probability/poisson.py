@@ -30,7 +30,8 @@ class Poisson:
             fact = 1
             for  i in range(1, k + 1):
                 fact = fact * i
-            return (self.lambtha ** k) * (2.7182818285 ** -self.lambtha) / fact 
+            pmf = (self.lambtha ** k) * (2.7182818285 ** -self.lambtha) / fact 
+            return pmf
 
     def cdf(self, k):
         """
@@ -38,11 +39,11 @@ class Poisson:
         k: integer value of the data
         return: CFD
         """
-        k = int(k)
+        if type(k) is not int:
+            k = int(k)
         if k < 0:
             return 0
-        else:
-            cdf = 0
-            for i in range(k + 1):
-                cdf = cdf + self.pmf(i)
-            return cdf
+        cdf = 0
+        for i in range(k + 1):
+            cdf = cdf + self.pmf(i)
+        return cdf
