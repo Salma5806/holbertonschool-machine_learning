@@ -8,7 +8,7 @@ class Normal:
     def __init__(self, data=None, mean=0., stddev=1.):
         """  Initialize normal"""
         if data is None:
-            if stddev < 1:
+            if stddev <= 0:
                 raise ValueError("stddev must be a positive value")
             else:
                 self.stddev = float(stddev)
@@ -19,14 +19,13 @@ class Normal:
             elif len(data) < 2:
                 raise ValueError("data must contain multiple values")
             else:
-                mean = float(sum(data) / len(data))
-                self.mean = mean
-                summation = 0
-                for x in data:
-                    summation += ((x - mean) ** 2)
-                stddev = (summation / len(data)) ** (1 / 2)
-                self.stddev = stddev
-
+                self.mean = sum(data) / len(data)
+                sigma = 0
+                for i in range(0, len(data)):
+                    x = (data[i] - self.mean) ** 2
+                    sigma += x
+            self.stddev = (sigma / len(data)) ** (1 / 2)
+                
         def z_score(self, x):
             """calculates the z-score of a given x-value"""
         mean = self.mean
