@@ -43,7 +43,7 @@ class Normal:
         return: x_value
         """
         return self.stddev * z + self.mean
-    
+
     def pdf(self, x):
         """
         x: the x parameter of the function
