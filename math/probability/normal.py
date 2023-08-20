@@ -40,5 +40,3 @@ class Normal:
         return: x_value
         """
         return self.stddev * z + self.mean
-
-                
