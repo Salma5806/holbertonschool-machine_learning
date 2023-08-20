@@ -49,3 +49,15 @@ class Binomial():
             prob = (self.p ** k) * ((1 - self.p) ** (self.n - k))
             pmf = comb * prob
         return pmf
+    
+    def cdf(self, k):
+        """Method Cumulative distribution function"""
+
+        k = int(k)
+        if k < 0:
+            return 0
+        else:
+            cdf = 0
+            for i in range(k + 1):
+                cdf += self.pmf(i)
+            return cdf
