@@ -22,12 +22,12 @@ class Neuron():
     def W(self):
         """ return weight """
         return self.__W
-    
+
     @property
     def b(self):
         """ return biais"""
         return self.__b
-    
+
     @property
     def A(self):
         """return output"""
