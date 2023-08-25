@@ -19,7 +19,7 @@ class Neuron():
         self.__A = 0
 
     @property
-    def w(self):
+    def W(self):
         """ return weight """
         return self.__W
     
