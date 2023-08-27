@@ -12,3 +12,4 @@ def calculate_accuracy(y, y_pred):
     equality = tf.math.equal(y_pred, y)
     accuracy = tf.reduce_mean(tf.cast(equality, "float"))
     return accuracy
+
