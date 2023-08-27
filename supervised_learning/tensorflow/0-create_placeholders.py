@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Defines a function to return two placeholders for the neural network"""
+"""
+Defines a function to return two placeholders for the neural network
+"""
 
 
 import tensorflow as tf
