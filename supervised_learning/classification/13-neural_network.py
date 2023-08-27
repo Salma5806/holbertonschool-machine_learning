@@ -16,7 +16,7 @@ class NeuralNetwork():
             raise TypeError("nodes must be an integer")
         if nodes < 1:
             raise ValueError("nodes must be a positive integer")
-        
+
         # Initialize attributes
         self.__W1 = np.random.randn(nodes, nx)
         self.__b1 = np.zeros((nodes, 1))
@@ -53,7 +53,7 @@ class NeuralNetwork():
     @property
     def A2(self):
         """Output 2"""
-        return self.__A2    
+        return self.__A2
 
     def forward_prop(self, X):
         """Calculate forward propagation of the neural network"""
@@ -72,7 +72,7 @@ class NeuralNetwork():
                 Y, np.log(A)) + np.multiply(
                 1 - Y, np.log(1.0000001 - A)))
         return C
-    
+
     def evaluate(self, X, Y):
         """evaluate the neural network prediction"""
 
@@ -90,7 +90,7 @@ class NeuralNetwork():
         dZ1 = np.dot(self.__W2.T, dZ2) * (A1 * (1 - A1))
         dW1 = np.dot(dZ1, X.T) / m
         db1 = np.sum(dZ1, axis=1, keepdims=True) / m
-        
+
         self.__W1 -= alpha * dW1
         self.__b1 -= alpha * db1
         self.__W2 -= alpha * dW2

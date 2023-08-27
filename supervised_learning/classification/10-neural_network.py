@@ -16,7 +16,7 @@ class NeuralNetwork():
             raise TypeError("nodes must be an integer")
         if nodes < 1:
             raise ValueError("nodes must be a positive integer")
-        
+
         # Initialize attributes
         self.__W1 = np.random.randn(nodes, nx)
         self.__b1 = np.zeros((nodes, 1))
@@ -53,7 +53,7 @@ class NeuralNetwork():
     @property
     def A2(self):
         """Output 2"""
-        return self.__A2    
+        return self.__A2
 
     def forward_prop(self, X):
         """Calculate forward propagation of the neural network"""
