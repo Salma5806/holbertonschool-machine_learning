@@ -8,25 +8,22 @@ class DeepNeuralNetwork:
     """class that represents a deep neural network"""
 
     def __init__(self, nx, layers):
+        """ represents a deep neural network performing binary classification """
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
         if nx < 1:
             raise ValueError("nx must be a positive integer")
-        
         if type(layers) is not list or len(layers) < 1:
             raise TypeError("layers must be a list of positive integers")
-        
-        self.__L = len(layers)
-        self.__cache = {}
-        self.__weights = {}
-        
-        for l in range(1, self.__L + 1):
-            if type(layers[l - 1]) is not int or layers[l - 1] <= 0:
+        weights = {}
+        previous = nx
+        for index, layer in enumerate(layers, 1):
+            if type(layer) is not int or layer < 0:
                 raise TypeError("layers must be a list of positive integers")
-            
-            if l == 1:
-                self.__weights['W' + str(l)] = np.random.randn(layers[l - 1], nx) * np.sqrt(2/nx)
-            else:
-                self.__weights['W' + str(l)] = np.random.randn(layers[l - 1], layers[l - 2]) * np.sqrt(2/layers[l - 2])
-            
-            self.__weights['b' + str(l)] = np.zeros((layers[l - 1], 1))
+            weights["b{}".format(index)] = np.zeros((layer, 1))
+            weights["W{}".format(index)] = (
+                np.random.randn(layer, previous) * np.sqrt(2 / previous))
+            previous = layer
+        self.L = len(layers)
+        self.cache = {}
+        self.weights = weights
