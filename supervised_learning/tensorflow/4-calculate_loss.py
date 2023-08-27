@@ -12,4 +12,3 @@ def calculate_loss(y, y_pred):
         l=y_pred,
     )
     return loss
-
