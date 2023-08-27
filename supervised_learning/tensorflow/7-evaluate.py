@@ -26,4 +26,3 @@ def evaluate(X, Y, save_path):
         pred, acc, cost = sess.run([prediction, accuracy, loss], feed_dict=feed_dict)
 
     return pred, acc, cost
-
