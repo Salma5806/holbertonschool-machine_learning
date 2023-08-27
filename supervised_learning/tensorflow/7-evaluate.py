@@ -5,7 +5,7 @@ neural network classifier
 """
 
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 tf.disable_eager_execution()
 

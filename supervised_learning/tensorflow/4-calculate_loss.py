@@ -2,7 +2,7 @@
 """Defines a function that calculates the softmax"""
 
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def calculate_loss(y, y_pred):

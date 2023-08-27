@@ -2,7 +2,7 @@
 """Defines a function that calculates the accuracy of a prediction"""
 
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def calculate_accuracy(y, y_pred):

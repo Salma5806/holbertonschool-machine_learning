@@ -2,8 +2,11 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
-lib_train = np.load('../data/Binary_Train.npz')
+data_dir = os.path.abspath('data')
+
+lib_train = np.load('/home/salma/holberton/holbertonschool-machine_learning/supervised_learning/classification/data/Binary_Train.npz', allow_pickle=True)
 X_3D, Y = lib_train['X'], lib_train['Y']
 
 fig = plt.figure(figsize=(10, 10))
@@ -13,4 +16,4 @@ for i in range(100):
     plt.title(Y[0, i])
     plt.axis('off')
 plt.tight_layout()
-plt.show()
+plt.savefig("mygraph.png")

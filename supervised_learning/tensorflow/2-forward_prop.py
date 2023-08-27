@@ -2,7 +2,7 @@
 """Defines a function that creates the forward propagation graph"""
 
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def forward_prop(x, layer_sizes=[], activations=[]):
