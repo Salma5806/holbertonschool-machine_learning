@@ -81,7 +81,7 @@ class NeuralNetwork():
         p = np.where(self.__A2 >= 0.5, 1, 0)
         return p, cost
 
-     def gradient_descent(self, X, Y, A1, A2, alpha=0.05):
+    def gradient_descent(self, X, Y, A1, A2, alpha=0.05):
         """gradient descent on the neural network"""
         m = Y.shape[1]
         dZ2 = A2 - Y
