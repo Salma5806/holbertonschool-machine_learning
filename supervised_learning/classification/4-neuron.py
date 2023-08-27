@@ -2,6 +2,7 @@
 """ Script to evaluate the prediction of a neuron """
 import numpy as np
 
+
 class Neuron():
     """ Class Neuron """
 
