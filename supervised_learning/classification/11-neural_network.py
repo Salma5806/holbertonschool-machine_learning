@@ -72,3 +72,4 @@ class NeuralNetwork():
                 Y, np.log(A)) + np.multiply(
                 1 - Y, np.log(1.0000001 - A)))
         return C
+    
