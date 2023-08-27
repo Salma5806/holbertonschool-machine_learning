@@ -9,6 +9,7 @@ import tensorflow.compat.v1 as tf
 
 tf.disable_eager_execution()
 
+
 def evaluate(X, Y, save_path):
     """Evaluates the output of a neural network"""
     with tf.Session() as sess:
@@ -23,7 +24,7 @@ def evaluate(X, Y, save_path):
         accuracy = tf.get_collection("accuracy")[0]
 
         feed_dict = {x: X, y: Y}
-        pred, acc, cost = sess.run([y_pred, accuracy, loss], 
+        pred, acc, cost = sess.run([y_pred, accuracy, loss],
                                    feed_dict=feed_dict)
 
     return pred, acc, cost
