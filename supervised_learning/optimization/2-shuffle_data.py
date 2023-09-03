@@ -3,6 +3,7 @@
 
 import numpy as np
 
+
 def shuffle_data(X, Y):
     """
     Shuffle the data points in two matrices X and Y the same way.
