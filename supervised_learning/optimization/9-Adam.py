@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ updates a variable in place using the Adam optimization algorithm """
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
