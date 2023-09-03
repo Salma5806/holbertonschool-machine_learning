@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ trains a loaded neural network model using mini-batch gradient descent """
 
-import numpy as np
 import tensorflow.compat.v1 as tf
 
 
