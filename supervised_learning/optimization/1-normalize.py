@@ -11,7 +11,8 @@ def normalize(X, m, s):
       - d: number of data points
       - nx: number of features
     - m: numpy.ndarray of shape (nx,) containing the mean of all features of X
-    - s: numpy.ndarray of shape (nx,) containing the standard deviation of all features of X
+    - s: numpy.ndarray of shape (nx,) containing the standard
+    deviation of all features of X
 
     Returns:
     - The normalized X matrix
