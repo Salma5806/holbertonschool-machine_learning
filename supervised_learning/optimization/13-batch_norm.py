@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""  normalizes an unactivated output 
+"""  normalizes an unactivated output
 of a neural network using batch normalization: """
 
 import numpy as np
@@ -7,7 +7,8 @@ import numpy as np
 
 def batch_norm(Z, gamma, beta, epsilon):
     """
-    Normalize an unactivated output of a neural network using batch normalization.
+    Normalize an unactivated output of a
+      neural network using batch normalization.
 
     Args:
         Z: Input data of shape (m, n).
