@@ -17,7 +17,7 @@ def update_variables_momentum(alpha, beta1, var, grad, v):
         grad: A numpy.ndarray containing the gradient of var.
         v: The previous first moment of var.
     Returns:
-        A tuple containing the updated variable 
+        A tuple containing the updated variable
         and the new moment, respectively.
     """
     v = (beta1 * v) + ((1 - beta1) * grad)
