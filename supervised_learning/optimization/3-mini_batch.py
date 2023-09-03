@@ -6,7 +6,7 @@ shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
 def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32
-                     , epochs=5, load_path="/tmp/model.ckpt", 
+                     , epochs=5, load_path="/tmp/model.ckpt",
                      save_path="/tmp/model.ckpt"):
     """
     Trains a loaded neural network model using mini-batch gradient descent.
@@ -14,14 +14,14 @@ def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32
     Args:
         X_train: numpy.ndarray of shape (m, 784) containing
           the training data
-        Y_train: one-hot numpy.ndarray of shape (m, 10) 
+        Y_train: one-hot numpy.ndarray of shape (m, 10)
         containing the training labels
-        X_valid: numpy.ndarray of shape (m, 784) 
+        X_valid: numpy.ndarray of shape (m, 784)
         containing the validation data
-        Y_valid: one-hot numpy.ndarray of shape (m, 10) 
+        Y_valid: one-hot numpy.ndarray of shape (m, 10)
         containing the validation labels
         batch_size: number of data points in a batch
-        epochs: number of times the training should pass 
+        epochs: number of times the training should pass
         through the whole dataset
         load_path: path from which to load the model
         save_path: path to where the model should be saved after training
