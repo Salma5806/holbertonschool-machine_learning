@@ -17,12 +17,9 @@ def moving_average(data, beta):
     """
     moving_averages = []
     weighted_sum = 0
-    beta_power = 1
 
-    for i, value in range(len(data)):
-        weighted_sum = (beta * weighted_sum) + ((1 - beta) * data[i])
-        bias_correction = 1 - beta ** (i + 1)
-        new_weight = weighted_sum / bias_correction
-        moving_averages.append(new_weight)
+    for i in range(len(data)):
+        weighted_sum = ((beta * weighted_sum) + ((1 - beta) * data[i]))
+        moving_averages.append(weighted_sum / (1 - (beta ** (i + 1))))
 
     return moving_averages
