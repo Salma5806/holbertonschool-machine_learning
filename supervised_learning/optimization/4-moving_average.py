@@ -15,13 +15,14 @@ def moving_average(data, beta):
     Returns:
         A list containing the moving averages of the data.
     """
-    moving_avg = []
-    prev_avg = 0.0
+    moving_averages = []
+    weighted_sum = 0.0
+    beta_power = 1.0
 
-    for i, x in enumerate(data):
-        bias_correction = 1 - (beta ** (i + 1))
-        curr_avg = (beta * prev_avg) + ((1 - beta) * x / bias_correction)
-        moving_avg.append(curr_avg)
-        prev_avg = curr_avg
+    for i, value in enumerate(data):
+        weighted_sum = (beta * weighted_sum) + ((1 - beta) * value)
+        bias_correction = weighted_sum / (1 - beta_power)
+        moving_averages.append(bias_correction)
+        beta_power *= beta
 
-    return moving_avg
+    return moving_averages
