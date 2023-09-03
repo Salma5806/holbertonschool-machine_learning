@@ -2,6 +2,7 @@
 """ trains a loaded neural network model using mini-batch gradient descent """
 
 import tensorflow.compat.v1 as tf
+shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
 def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32, epochs=5, load_path="/tmp/model.ckpt", save_path="/tmp/model.ckpt"):
@@ -21,7 +22,7 @@ def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32, epochs=5
     Returns:
         The path where the model was saved.
     """
-     with tf.Session() as sess:
+    with tf.Session() as sess:
         saver = tf.train.import_meta_graph(load_path + ".meta")
         saver.restore(sess, load_path)
 
