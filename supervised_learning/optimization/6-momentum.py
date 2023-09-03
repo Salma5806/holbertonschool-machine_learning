@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """  creates the training operation for a neural network
- in tensorflow using the gradient descent with momentum 
+ in tensorflow using the gradient descent with momentum
  optimization algorithm
  """
 
