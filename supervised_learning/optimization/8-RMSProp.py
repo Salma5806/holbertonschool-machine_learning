@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" creates the training operation for a neural network in tensorflow using 
+""" creates the training operation for a neural network in tensorflow using
 the RMSProp optimization algorithm """
 
 import tensorflow.compat.v1 as tf
