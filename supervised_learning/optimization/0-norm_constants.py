@@ -14,7 +14,7 @@ def normalization_constants(X):
       - nx: number of features
 
     Returns:
-    - A tuple containing the mean and standard 
+    - A tuple containing the mean and standard
     deviation of each feature,respectively.
     """
     mean = np.mean(X, axis=0)
