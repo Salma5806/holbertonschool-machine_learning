@@ -8,7 +8,8 @@ import numpy as np
 
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
-    """Updates the weights with Dropout regularization using gradient descent"""
+    """Updates the weights with Dropout regularization 
+    using gradient descent"""
     m = Y.shape[1]
     W_copy = weights.copy()
 
