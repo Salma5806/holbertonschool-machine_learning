@@ -4,7 +4,7 @@ Defines a function that calculates the cost of a neural network
 using L2 Regularization
 """
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def l2_reg_cost(cost):
