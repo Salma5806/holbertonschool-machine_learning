@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" Early stopping should occur when the validation cost of the network has not decreased relative to the optimal validation cost 
+""" Early stopping should occur when the validation cost of the network has
+ not decreased relative to the optimal validation cost
 by more than the threshold over a specific patience count """
 
 
