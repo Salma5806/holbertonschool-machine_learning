@@ -10,21 +10,22 @@ import numpy as np
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
     """Updates the weights with Dropout regularization using gradient descent"""
     m = Y.shape[1]
-    dZ = cache['A' + str(L)] - Y
+    W_copy = weights.copy()
 
-    for i in range(L, 0, -1):
-        A_prev = cache['A' + str(i - 1)]
-        W = weights['W' + str(i)]
-        
-        dW = np.dot(dZ, A_prev.T) / m
-        db = np.sum(dZ, axis=1, keepdims=True) / m
-        
-        if i > 1:
-            D = cache['D' + str(i - 1)]
-            dA = np.dot(W.T, dZ)
-            dA *= D
-            dA /= keep_prob
-            dZ = dA * (1 - np.tanh(cache['A' + str(i - 1)]) ** 2)
-        
-        weights['W' + str(i)] -= alpha * dW
-        weights['b' + str(i)] -= alpha * db
+    for i in reversed(range(L)):
+        A = cache["A" + str(i + 1)]
+        if i == L - 1:
+            dZ = A - Y
+            dW = (np.matmul(cache["A" + str(i)], dZ.T) / m).T
+            db = np.sum(dZ, axis=1, keepdims=True) / m
+        else:
+            dW2 = np.matmul(W_copy["W" + str(i + 2)].T, dZ2)
+            dtanh = 1 - (A * A)
+            dZ = dW2 * dtanh
+            dZ = dZ * cache["D" + str(i + 1)]
+            dZ = dZ / keep_prob
+            dW = np.matmul(dZ, cache["A" + str(i)].T) / m
+            db = np.sum(dZ, axis=1, keepdims=True) / m
+        weights["W" + str(i + 1)] = (W_copy["W" + str(i + 1)] - (alpha * dW))
+        weights["b" + str(i + 1)] = W_copy["b" + str(i + 1)] - (alpha * db)
+        dZ2 = dZ
