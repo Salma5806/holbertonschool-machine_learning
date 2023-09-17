@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
+""" builds a neural network with keras """
 
 import tensorflow.keras as K
 
+
 def build_model(nx, layers, activations, lambtha, keep_prob):
     """
-    Builds a neural network with Keras without using the Sequential class.
-    """
+    Builds a neural network with Keras 
+    without using the Sequential class."""
     
     x = K.layers.Input(shape=(nx,))
     
