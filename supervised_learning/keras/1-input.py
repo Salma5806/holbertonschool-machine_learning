@@ -6,9 +6,8 @@ import tensorflow.keras as K
 
 def build_model(nx, layers, activations, lambtha, keep_prob):
     """
-    Builds a neural network with Keras 
+    Builds a neural network with Keras
     without using the Sequential class."""
-    
     X_input = K.layers.Input(shape=(nx,))
 
     X = X_input
