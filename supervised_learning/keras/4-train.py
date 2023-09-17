@@ -4,7 +4,8 @@
 import tensorflow.keras as K
 
 
-def train_model(network, data, labels, batch_size, epochs, verbose=True, shuffle=False):
+def train_model(network, data, labels, batch_size, 
+                epochs, verbose=True, shuffle=False):
     """
     Trains a model using mini-batch gradient descent."""
     history = network.fit(
@@ -13,7 +14,5 @@ def train_model(network, data, labels, batch_size, epochs, verbose=True, shuffle
         batch_size=batch_size,
         epochs=epochs,
         verbose=verbose,
-        shuffle=shuffle
-    )
-    
+        shuffle=shuffle)
     return history
