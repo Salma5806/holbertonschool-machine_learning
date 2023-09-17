@@ -4,16 +4,16 @@
 import tensorflow.keras as K
 
 
-def train_model(network, data, labels, batch_size, epochs, validation_data=None, early_stopping=False, patience=0, verbose=True, shuffle=False):
+def train_model(network, data, labels, batch_size,
+                 epochs, validation_data=None, early_stopping=False,
+                   patience=0, verbose=True, shuffle=False):
     """
-    Trains a model using mini-batch 
+    Trains a model using mini-batch
     gradient descent and optionally validates it."""
     callbacks = []
-
     if validation_data:
         val_data, val_labels = validation_data
         validation_data = (val_data, val_labels)
-        
         if early_stopping:
             early_stopping_callback = K.callbacks.EarlyStopping(
                 monitor='val_loss',
@@ -31,7 +31,7 @@ def train_model(network, data, labels, batch_size, epochs, validation_data=None,
         verbose=verbose,
         shuffle=shuffle,
         validation_data=validation_data,
-        callbacks=callbacks 
+        callbacks=callbacks
     )
 
     return history
