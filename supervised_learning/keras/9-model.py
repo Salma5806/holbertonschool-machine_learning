@@ -9,6 +9,7 @@ def save_model(network, filename):
     Saves an entire Keras model to a file."""
     network.save(filename)
 
+
 def load_model(filename):
     """
     Loads an entire Keras model from a file."""
