@@ -8,9 +8,5 @@ def one_hot(labels, classes=None):
     """
     Converts a label vector into a one-hot matrix.
     """
-    if classes is None:
-        classes = K.int_shape(labels)[-1]
-
-    one_hot_matrix = K.one_hot(labels, classes)
-    
-    return one_hot_matrix
+    one_hot = K.utils.to_categorical(labels, num_classes=classes)
+    return one_hot
