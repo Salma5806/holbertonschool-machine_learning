@@ -19,7 +19,7 @@ def pool_forward(A_prev, kernel_shape, stride=(1, 1), mode='max'):
     for i in range(h_out):
         for j in range(w_out):
             if mode == "avg":
-                pooled = np.average(A_prev[:, i*sh:j*sh + kh,
+                pooled = np.mean(A_prev[:, i*sh:j*sh + kh,
                                     j*sw:j*sw + kw, :],
                                     axis=(1, 2))
 
