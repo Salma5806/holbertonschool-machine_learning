@@ -11,22 +11,21 @@ def pool_forward(A_prev, kernel_shape, stride=(1, 1), mode='max'):
     sh = stride[0]
     sw = stride[1]
 
-    h_out = int((h_prev - kh) / sh) + 1
-    w_out = int((w_prev - kw) / sw) + 1
-
+    h_out = int(1 + (h_prev - kh) / sh)
+    w_out = int(1 + (w_prev - kw) / sw)
     A = np.zeros((m, h_out, w_out, c_prev))
 
     for i in range(h_out):
         for j in range(w_out):
-            if mode == "avg":
-                pooled = np.mean(A_prev[:, i*sh:j*sh + kh,
-                                    j*sw:j*sw + kw, :],
-                                    axis=(1, 2))
+            h_start = i * sh
+            h_end = h_start + kh
+            w_start = j * sw
+            w_end = w_start + kw
+            A_slice = A_prev[:, h_start:h_end, w_start:w_end, :]
 
-            else:
-                pooled = np.amax(A_prev[:, i*sh:i*sh + kh,
-                                 j*sw:j*sw + kw, :],
-                                 axis=(1, 2))
-            A[:, i, j, :] = pooled
+            if mode == "max":
+                A[:, i, j, :] = np.max(A_slice, axis=(1, 2))
+            elif mode == "avg":
+                A[:, i, j, :] = np.mean(A_slice, axis=(1, 2))
 
     return A
