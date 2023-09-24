@@ -17,7 +17,7 @@ def calculate_accuracy(y, y_pred):
 
 
 def lenet5(x, y):
-    """Builds a modified version of 
+    """Builds a modified version of
     the LeNet-5 architecture using tensorflow"""
     init = tf.keras.initializers.VarianceScaling(scale=2.0)
 
