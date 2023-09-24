@@ -17,9 +17,10 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
     db = np.sum(dZ, axis=(0, 1, 2), keepdims=True)
 
     if padding == "same":
-        pad_h = ((h_prev - 1) * sh + kh - h_new) // 2
-        pad_w = ((w_prev - 1) * sw + kw - w_new) // 2
-        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)), mode='constant')
+        pad_h = int(((h_prev - 1) * sh + kh - h_new) / 2)
+        pad_w = int(((w_prev - 1) * sw + kw - w_new) / 2)
+        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)), 'constant',
+                    constant_values=0)
 
     elif padding == "valid":
         A_prev_pad = A_prev
