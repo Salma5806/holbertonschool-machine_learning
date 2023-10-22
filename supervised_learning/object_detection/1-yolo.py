@@ -23,48 +23,52 @@ class Yolo:
         self.anchors = anchors
 
     def process_outputs(self, outputs, image_size):
-        """Process and normalize the output of the YoloV3 model"""
-        boxes = []
-        box_confidences = []
-        box_class_probs = []
+        """outputs is a list of numpy.ndarrays
+         containing the predictions from"""
+        boxes, box_confidences, box_class_probs = [], [], []
         image_height, image_width = image_size
-        i = 0
-        for output in outputs:
-            grid_h, grid_w, nb_box, _ = output.shape
-            box_conf = sigmoid(output[:, :, :, 4])
-            box_prob = sigmoid(output[:, :, :, 5:])
-            box_confidences.append(box_conf)
-            box_class_probs.append(box_prob)
-            t_x = output[:, :, :, 0]
-            t_y = output[:, :, :, 1]
-            t_w = output[:, :, :, 2]
-            t_h = output[:, :, :, 3]
-            c_x = np.arange(grid_w)
-            c_x = np.tile(c_x, grid_h)
-            c_x = c_x.reshape(grid_h, grid_w, 1)
+        anchors_w = self.anchors[..., 0]
+        anchors_h = self.anchors[..., 1]
 
-            c_y = np.arange(grid_h)
-            c_y = np.tile(c_y, grid_w)
-            c_y = c_y.reshape(1, grid_h, grid_w).T
-            p_w = self.anchors[i, :, 0]
-            p_h = self.anchors[i, :, 1]
-            b_x = (sigmoid(t_x) + c_x)
-            b_y = (sigmoid(t_y) + c_y)
-            b_w = (np.exp(t_w) * p_w)
-            b_h = (np.exp(t_h) * p_h)
-            b_x = b_x / grid_w
-            b_y = b_y / grid_h
-            b_w = b_w / self.model.input.shape[1]
-            b_h = b_h / self.model.input.shape[2]
-            x1 = (b_x - b_w / 2) * image_width
-            y1 = (b_y - b_h / 2) * image_height
-            x2 = (b_x + b_w / 2) * image_width
-            y2 = (b_y + b_h / 2) * image_height
-            box = np.zeros((grid_h, grid_w, nb_box, 4))
-            box[:, :, :, 0] = x1
-            box[:, :, :, 1] = y1
-            box[:, :, :, 2] = x2
-            box[:, :, :, 3] = y2
+        for i, output in enumerate(outputs):
+            grid_height, grid_width, anchors_size, _ = output.shape
+
+            t_x = output[..., 0]
+            t_y = output[..., 1]
+            t_w = output[..., 2]
+            t_h = output[..., 3]
+            box_confidence = output[..., 4]
+            classes = output[..., 5:]
+
+            p_h = np.tile(anchors_h[i], grid_height).reshape(
+                grid_height, 1, len(anchors_h[i]))
+            p_w = np.tile(anchors_w[i], grid_width).reshape(
+                grid_width, 1, len(anchors_w[i]))
+
+            c_x = np.tile(np.arange(grid_width), grid_width).reshape(
+                grid_width, grid_width, 1)
+            c_y = np.tile(np.arange(grid_height), grid_height).reshape(
+                grid_width, grid_width).T.reshape(
+                grid_height, grid_height, 1)
+
+            b_x = (1 / (1 + np.exp(-t_x)) + c_x) / grid_width
+            b_y = (1 / (1 + np.exp(-t_y)) + c_y) / grid_height
+            b_w = (np.exp(t_w) * p_w) / self.model.input.shape[1].value
+            b_h = (np.exp(t_h) * p_h) / self.model.input.shape[2].value
+
+            box = np.empty((grid_height, grid_width, anchors_size, 4))
+
+            box[..., 0] = (b_x - b_w / 2) * image_width
+            box[..., 1] = (b_y - b_h / 2) * image_height
+            box[..., 2] = (b_x + b_w / 2) * image_width
+            box[..., 3] = (b_y + b_h / 2) * image_height
+
             boxes.append(box)
-            i += 1
-        return boxes, box_confidences, box_class_probs    
+
+            box_confidences.append((1 / (1 + np.exp(-box_confidence))
+                                    ).reshape(grid_width, grid_height,
+                                              anchors_size, 1))
+
+            box_class_probs.append(1 / (1 + np.exp(-classes)))
+
+        return (boxes, box_confidences, box_class_probs)
