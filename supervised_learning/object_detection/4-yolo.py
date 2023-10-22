@@ -164,14 +164,9 @@ class Yolo:
     def load_images(folder_path):
         """folder_path  a string representing the path to the folder holding
         all the images to load"""
-        if not os.path.exists(folder_path):
-            return None
         images = []
-        paths = []
-        image_paths = os.listdir(folder_path)
-        for image in image_paths:
-            img = cv2.imread(os.path.join(folder_path, image))
-            if img is not None:
-                images.append(img)
-                paths.append(os.path.join('./yolo', image))
-        return (images, paths)
+        images_paths = glob.glob(folder_path + '/*', recursive=False)
+        for i in images_paths:
+            image = cv2.imread(i)
+            images.append(image)
+        return images, images_paths
