@@ -60,7 +60,6 @@ def intersection(x, n, P, Pr):
     if x > n:
         raise ValueError("x cannot be greater than n")
 
-
     if not isinstance(P, np.ndarray) or P.ndim != 1:
         raise TypeError("P must be a 1D numpy.ndarray")
 
