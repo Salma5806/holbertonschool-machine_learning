@@ -43,4 +43,3 @@ class BayesianOptimization:
         next_sample = self.X_s[np.argmax(self.acquisition())]
         next_output = self.f(next_sample)
         self.gp.update(next_sample, next_output)
-
