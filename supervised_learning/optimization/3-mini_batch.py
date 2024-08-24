@@ -1,33 +1,28 @@
 #!/usr/bin/env python3
-""" trains a loaded neural network model using mini-batch gradient descent """
+"""Train a loaded neural network model using mini-batch gradient descent."""
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
-def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32
-                     , epochs=5, load_path="/tmp/model.ckpt",
+def train_mini_batch(X_train, Y_train, X_valid, Y_valid,
+                     batch_size=32, epochs=5, load_path="/tmp/model.ckpt",
                      save_path="/tmp/model.ckpt"):
-    """
-    Trains a loaded neural network model using mini-batch gradient descent.
+    """Trains a loaded neural network model using mini-batch gradient descent.
 
     Args:
-        X_train: numpy.ndarray of shape (m, 784) containing
-          the training data
-        Y_train: one-hot numpy.ndarray of shape (m, 10)
-        containing the training labels
-        X_valid: numpy.ndarray of shape (m, 784)
-        containing the validation data
-        Y_valid: one-hot numpy.ndarray of shape (m, 10)
-        containing the validation labels
-        batch_size: number of data points in a batch
-        epochs: number of times the training should pass
-        through the whole dataset
-        load_path: path from which to load the model
-        save_path: path to where the model should be saved after training
+        X_train (numpy.ndarray): Training data of shape (m, 784)
+        Y_train (numpy.ndarray): Training labels in one-hot format (m, 10)
+        X_valid (numpy.ndarray): Validation data of shape (m, 784)
+        Y_valid (numpy.ndarray): Validation labels in one-hot format (m, 10)
+        batch_size (int): Number of data points in a batch (default: 32)
+        epochs (int): Times the training should pass whole dataset (default: 5)
+        load_path (str): Path to load the model (default: "/tmp/model.ckpt")
+        save_path (str): Saved path after training (default: "/tmp/model.ckpt")
 
     Returns:
-        The path where the model was saved.
+        str: The path where the model was saved.
+
     """
     with tf.Session() as sess:
         saver = tf.train.import_meta_graph(load_path + ".meta")
