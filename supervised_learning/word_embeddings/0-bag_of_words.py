@@ -5,7 +5,7 @@ import numpy as np
 import re
 
 
-def bag_of_words(sentences, vocab=None):
+def bag_of_words(sentence):
     """
     Creates a bag of words embedding matrix.
       - sentences (list): A list of sentences to analyze.
@@ -24,18 +24,24 @@ def bag_of_words(sentences, vocab=None):
       - Fill in the matrix with the word counts.
     """
 
-    words_list = [re.findall(r'\b\w[\w]*\b', re.sub(
-      r"'s\b", '', sentence.lower())) for sentence in sentences]
+    processed_sentence = re.sub(r"\b(\w+)'s\b", r"\1", sentence.lower())
+    return re.findall(r'\w+', processed_sentence)
 
+
+def bag_of_words(sentences, vocab=None):
+    """
+    badding word
+    """
+    preprocessed_sentences = [preprocess_sentence(sentence) 
+                        for sentence in sentences]
     if vocab is None:
-        vocab = sorted(set(word for words in words_list for word in words))
-
+        all_words = [word for sentence in preprocessed_sentences
+                    for word in sentence]
+        vocab = sorted(set(all_words))
+    word_to_index = {word: idx for idx, word in enumerate(vocab)}
     embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
-
-    for i, words in enumerate(words_list):
-        for word in words:
-            if word in vocab:
-                j = vocab.index(word)
-                embeddings[i, j] += 1
-
+    for i, sentence in enumerate(preprocessed_sentences):
+        for word in sentence:
+            if word in word_to_index:
+                embeddings[i, word_to_index[word]] += 1
     return embeddings, vocab
