@@ -11,7 +11,7 @@ class RNNEncoder(tf.keras.layers.Layer):
     """
     def __init__(self, vocab, embedding, units, batch):
         """
-          initialize embedding
+
         """
         super(RNNEncoder, self).__init__()
         self.batch = batch
@@ -25,15 +25,12 @@ class RNNEncoder(tf.keras.layers.Layer):
 
     def initialize_hidden_state(self):
         """
-          Initializes the hidden states for the RNN cell to a tensor of zeros
-        """
-        hiddens = tf.zeros((self.batch, self.units))
 
-        return hiddens
+        """
+        return tf.zeros((self.batch, self.units))
 
     def call(self, x, initial):
         """
-          Calls the encoder with given input to encoder layer and returns output
 
         """
         x = self.embedding(x)
