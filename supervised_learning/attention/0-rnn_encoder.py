@@ -5,20 +5,17 @@ tf.compat.v1.enable_eager_execution()
 
 class RNNEncoder:
     def __init__(self, vocab, embedding, units, batch):
-        """
-        Initialize the RNN Encoder."""
-        super(RNNEncoder, self).__init__()
+        """ """
         self.batch = batch
         self.units = units
-        self.embedding = tf.keras.layers.Embedding(input_dim=vocab, output_dim=embedding)
-        self.gru = tf.keras.layers.GRU(
-            units,
-            return_sequences=True,
-            return_state=True,
-            recurrent_initializer='glorot_uniform'
-        )
-
+        self.embedding = tf.keras.layers.Embedding(vocab, embedding)
+        init = tf.keras.initializers.glorot_uniform()
+        self.gru = tf.keras.layers.GRU(units,
+                                       recurrent_initializer=init,
+                                       return_sequences=True,
+                                       return_state=True)
         def initialize_hidden_state(self):
+            """ """
             # initialise the hidden state to zeros
              return tf.zeros((self.batch, self.units))
         
@@ -30,4 +27,3 @@ class RNNEncoder:
             outputs, hidden = self.gru(x, initial_state=initial)
 
             return outputs, hidden
-
