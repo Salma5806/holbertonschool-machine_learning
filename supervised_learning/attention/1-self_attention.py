@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-""" """
+"""
+This module defines the SelfAttention layer used for calculating
+attention in a machine translation model using TensorFlow.
+"""
 import tensorflow as tf
 
 
