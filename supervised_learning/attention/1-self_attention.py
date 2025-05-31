@@ -1,40 +1,34 @@
 #!/usr/bin/env python3
-"""
-Self-attention layer
-This module implements a self-attention layer using TensorFlow.
-"""
-
 import tensorflow as tf
+
 
 class SelfAttention(tf.keras.layers.Layer):
     """
-    Self-Attention Layer that computes a context vector using attention mechanism.
+    Self-Attention Layer for Machine Translation
     """
 
     def __init__(self, units):
         """
-        Initializes the self-attention layer.
+        Class constructor
 
         Args:
-            units (int): Number of hidden units in the dense layers.
+            units (int): number of hidden units in the alignment model
         """
         super(SelfAttention, self).__init__()
-        self.units = units
         self.W = tf.keras.layers.Dense(units)
         self.U = tf.keras.layers.Dense(units)
         self.V = tf.keras.layers.Dense(1)
 
-        # Print types and units
-        print(type(self.W), self.W.units)
-        print(type(self.U), self.U.units)
-        print(type(self.V), self.V.units)
-
     def call(self, s_prev, hidden_states):
         """
-        Compute the attention scores and return the context vector.
+        Computes the context vector and attention weights
+
         """
-        score = self.V(tf.nn.tanh(self.W(tf.expand_dims(s_prev, 1))
-                                  + self.U(hidden_states)))
+        s_prev_expanded = tf.expand_dims(self.W(s_prev), 1)
+        u_hidden = self.U(hidden_states)
+        score = tf.nn.tanh(s_prev_expanded + u_hidden)
+        score = self.V(score)
         weights = tf.nn.softmax(score, axis=1)
         context = tf.reduce_sum(weights * hidden_states, axis=1)
+
         return context, weights
