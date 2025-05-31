@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import tensorflow as tf
 SelfAttention = __import__('1-self_attention').SelfAttention
-"""
+"""RNNDecoder class for machine translation
+This module implements an RNN decoder for machine translation using TensorFlow."""
 
-"""
 class RNNDecoder(tf.keras.layers.Layer):
     """
     Class to decode for machine translation
