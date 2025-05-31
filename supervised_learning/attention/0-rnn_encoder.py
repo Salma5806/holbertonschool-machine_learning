@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """RNN Encoder for Sequence Data"""
 import tensorflow as tf
+tf.compat.v1.enable_eager_execution()
 
 class RNNEncoder:
     def __init__(self, vocab, embedding, units, batch):
