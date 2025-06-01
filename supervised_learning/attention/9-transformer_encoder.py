@@ -1,36 +1,42 @@
 #!/usr/bin/env python3
 """
-EncoderBlock: A building block of the Transformer encoder.
-It applies multi-head self-attention followed by a feed-forward network,
-with residual connections, layer normalization, and dropout.
+Transformer Encoder: A stack of N encoder blocks with embeddings and positional encoding.
 """
 
 import tensorflow as tf
-MultiHeadAttention = __import__('6-multihead_attention').MultiHeadAttention
+positional_encoding = __import__('4-positional_encoding').positional_encoding
+EncoderBlock = __import__('7-transformer_encoder_block').EncoderBlock
 
-class EncoderBlock(tf.keras.layers.Layer):
+
+class Encoder(tf.keras.layers.Layer):
     """
-    Transformer Encoder Block(multihead)"""
+    Transformer Encoder
 
-    def __init__(self, dm, h, hidden, drop_rate=0.1):
-        """Initializes the encoder block(dimen, head, hidden"""
+    This class represents the encoder part of a Transformer, made of:
+    - an embedding layer (to turn words into vectors)
+    - positional encoding (to add order information)
+    - a stack of N identical encoder blocks
+    """
+
+    def __init__(self, N, dm, h, hidden, input_vocab, max_seq_len, drop_rate=0.1):
+        """Initializes the Encoder"""
         super().__init__()
-        self.mha = MultiHeadAttention(dm, h)
-        self.dense_hidden = tf.keras.layers.Dense(hidden, activation='relu')
-        self.dense_output = tf.keras.layers.Dense(dm)
-        self.norm1 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
-        self.norm2 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
-        self.dropout1 = tf.keras.layers.Dropout(drop_rate)
-        self.dropout2 = tf.keras.layers.Dropout(drop_rate)
 
-    def call(self, x, training, mask=None):
-        """Runs the encoder block on the input"""
-        attn_output, _ = self.mha(x, x, x, mask)
-        attn_output = self.dropout1(attn_output, training=training)
-        out1 = self.norm1(x + attn_output)
-        ffn_output = self.dense_hidden(out1)
-        ffn_output = self.dense_output(ffn_output)
-        ffn_output = self.dropout2(ffn_output, training=training)
-        out2 = self.norm2(out1 + ffn_output)
+        self.N = N
+        self.dm = dm
+        self.embedding = tf.keras.layers.Embedding(input_vocab, dm)
+        self.positional_encoding = positional_encoding(max_seq_len, dm)
+        self.blocks = [EncoderBlock(dm, h, hidden, drop_rate) for _ in range(N)]
+        self.dropout = tf.keras.layers.Dropout(drop_rate)
 
-        return out2
+    def call(self, x, training, mask):
+        """Applies the encoder to the input"""
+        seq_len = tf.shape(x)[1]
+        x = self.embedding(x) 
+        x *= tf.math.sqrt(tf.cast(self.dm, tf.float32))
+        x += self.positional_encoding[:seq_len]
+        x = self.dropout(x, training=training)
+        for block in self.blocks:
+            x = block(x, training, mask)
+
+        return x
