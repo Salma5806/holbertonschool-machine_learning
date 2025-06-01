@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Transformer Encoder: A stack of N encoder blocks with embeddings and positional encoding.
+Transformer Encoder: A stack of N encoder blocks with embeddings and
+positional encoding.
 """
 
 import tensorflow as tf
@@ -18,7 +19,8 @@ class Encoder(tf.keras.layers.Layer):
     - a stack of N identical encoder blocks
     """
 
-    def __init__(self, N, dm, h, hidden, input_vocab, max_seq_len, drop_rate=0.1):
+    def __init__(self, N, dm, h, hidden,
+                 input_vocab, max_seq_len, drop_rate=0.1):
         """Initializes the Encoder"""
         super().__init__()
 
@@ -26,16 +28,19 @@ class Encoder(tf.keras.layers.Layer):
         self.dm = dm
         self.embedding = tf.keras.layers.Embedding(input_vocab, dm)
         self.positional_encoding = positional_encoding(max_seq_len, dm)
-        self.blocks = [EncoderBlock(dm, h, hidden, drop_rate) for _ in range(N)]
+        self.blocks = [
+            EncoderBlock(dm, h, hidden, drop_rate) for _ in range(N)
+        ]
         self.dropout = tf.keras.layers.Dropout(drop_rate)
 
     def call(self, x, training, mask):
         """Applies the encoder to the input"""
         seq_len = tf.shape(x)[1]
-        x = self.embedding(x) 
+        x = self.embedding(x)
         x *= tf.math.sqrt(tf.cast(self.dm, tf.float32))
         x += self.positional_encoding[:seq_len]
         x = self.dropout(x, training=training)
+
         for block in self.blocks:
             x = block(x, training, mask)
 
