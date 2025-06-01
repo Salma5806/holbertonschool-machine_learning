@@ -6,7 +6,7 @@ positional_encoding = __import__('4-positional_encoding').positional_encoding
 EncoderBlock = __import__('7-transformer_encoder_block').EncoderBlock
 
 
-class EncoderBlock(tf.keras.layers.Layer):
+class Encoder(tf.keras.layers.Layer):
     """Classe représentant un bloc d'encodeur du Transformer"""
     def __init__(self, dm, h, hidden, drop_rate=0.1):
         """Initialise un bloc encodeur"""
