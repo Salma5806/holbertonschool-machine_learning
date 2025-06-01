@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Module implementing the Multi Head Attention layer."""
 import tensorflow as tf
-MultiHeadAttention = __import__('6-multihead_attention').multihead_attention
+MultiHeadAttention = __import__('6-multihead_attention').MultiHeadAttention
 
 class EncoderBlock(tf.keras.layers.Layer):
     """Bloc d'encodage pour un transformeur, avec attention multi-têtes et réseau feed-forward."""
