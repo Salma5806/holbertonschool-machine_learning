@@ -6,35 +6,30 @@ positional_encoding = __import__('4-positional_encoding').positional_encoding
 EncoderBlock = __import__('7-transformer_encoder_block').EncoderBlock
 
 
-class Encoder(tf.keras.layers.Layer):
-    """Transformer Encoder composed of stacked EncoderBlocks."""
+class EncoderBlock(tf.keras.layers.Layer):
+    """Classe représentant un bloc d'encodeur du Transformer"""
+    def __init__(self, dm, h, hidden, drop_rate=0.1):
+        """Initialise un bloc encodeur"""
+        super().__init__()
 
-    def __init__(self, N, dm, h, hidden, input_vocab, max_seq_len, drop_rate=0.1):
-        """
-        Class constructor for the Transformer Encoder.
-        """
-        super(Encoder, self).__init__()
-        self.N = N
-        self.dm = dm
+        self.mha = tf.keras.layers.MultiHeadAttention(num_heads=h, key_dim=dm // h)
+        self.dropout1 = tf.keras.layers.Dropout(drop_rate)
+        self.norm1 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
 
-        self.embedding = tf.keras.layers.Embedding(input_dim=input_vocab, output_dim=dm)
-        self.positional_encoding = positional_encoding(max_seq_len, dm)
-
-        self.blocks = [EncoderBlock(dm, h, hidden, drop_rate) for _ in range(N)]
-        self.dropout = tf.keras.layers.Dropout(drop_rate)
+        self.ffn = tf.keras.Sequential([
+            tf.keras.layers.Dense(hidden, activation='relu'),
+            tf.keras.layers.Dense(dm)
+        ])
+        self.dropout2 = tf.keras.layers.Dropout(drop_rate)
+        self.norm2 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
 
     def call(self, x, training, mask):
-        """
-        Forward pass of the encoder.
-        """
-        seq_len = tf.shape(x)[1]
-        x = self.embedding(x)
-        x *= tf.math.sqrt(tf.cast(self.dm, tf.float32))  # scale embedding
-        x += self.positional_encoding[:seq_len]
+        """Applique le bloc encodeur sur les entrées"""
+        attn_output = self.mha(x, x, x, attention_mask=mask)
+        attn_output = self.dropout1(attn_output, training=training)
+        out1 = self.norm1(x + attn_output)
+        ffn_output = self.ffn(out1)
+        ffn_output = self.dropout2(ffn_output, training=training)
+        out2 = self.norm2(out1 + ffn_output)
 
-        x = self.dropout(x, training=training)
-
-        for block in self.blocks:
-            x = block(x, training, mask)
-
-        return x
+        return out2
