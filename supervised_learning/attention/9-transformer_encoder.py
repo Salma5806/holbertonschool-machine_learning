@@ -7,10 +7,6 @@ positional_encoding = __import__('4-positional_encoding').positional_encoding
 EncoderBlock = __import__('7-transformer_encoder_block').EncoderBlock
 
 
-import tensorflow as tf
-from tensorflow.keras.layers import Layer, Dense, LayerNormalization, Dropout
-
-
 class Encoder(tf.keras.layers.Layer):
    def __init__(self, N, dm, h, hidden, input_vocab, max_seq_len,
                  drop_rate=0.1):
