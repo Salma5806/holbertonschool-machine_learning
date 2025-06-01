@@ -2,6 +2,7 @@
 """Module implementing the Transformer Encoder Block."""
 
 import tensorflow as tf
+
 MultiHeadAttention = __import__('6-multihead_attention').MultiHeadAttention
 
 class EncoderBlock(tf.keras.layers.Layer):
