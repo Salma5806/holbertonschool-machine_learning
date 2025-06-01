@@ -4,7 +4,6 @@
 import tensorflow as tf
 MultiHeadAttention = __import__('6-multihead_attention').MultiHeadAttention
 
-
 class EncoderBlock(tf.keras.layers.Layer):
     """Transformer encoder block with multi-head attention and feed-forward network"""
 
