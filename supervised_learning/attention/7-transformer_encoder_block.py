@@ -1,44 +1,39 @@
 #!/usr/bin/env python3
-"""Module implementing the Transformer Encoder Block."""
+"""
+transformer encoder block
+"""
 
 import tensorflow as tf
-
 MultiHeadAttention = __import__('6-multihead_attention').MultiHeadAttention
 
 
 class EncoderBlock(tf.keras.layers.Layer):
     """
-    Transformer encoder block with multi-head attention
-    and feed-forward network.
+    encoder block for a transformer
     """
 
     def __init__(self, dm, h, hidden, drop_rate=0.1):
-        """Initializes the encoder block"""
+        """
+        intitalize with hyper
+        """
         super(EncoderBlock, self).__init__()
-        self.dm = dm
-        self.h = h
-        self.hidden = hidden
-        self.drop_rate = drop_rate
-
         self.mha = MultiHeadAttention(dm, h)
         self.dense_hidden = tf.keras.layers.Dense(hidden, activation='relu')
         self.dense_output = tf.keras.layers.Dense(dm)
-
         self.layernorm1 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
         self.layernorm2 = tf.keras.layers.LayerNormalization(epsilon=1e-6)
-
         self.dropout1 = tf.keras.layers.Dropout(drop_rate)
         self.dropout2 = tf.keras.layers.Dropout(drop_rate)
 
     def call(self, x, training, mask=None):
-        """Forward pass for the encoder block"""
-        output_1, _ = self.mha(x, x, x, mask)
-        output_1 = self.dropout1(output_1, training=training)
-        out_1 = self.layernorm1(x + output_1)
-
-        output_2 = self.dense_hidden(out_1)
-        output_2 = self.dense_output(output_2)
-        output_2 = self.dropout2(output_2, training=training)
-        out_2 = self.layernorm2(out_1 + output_2)
-
-        return out_2
+        """
+        Call forward method
+        """
+        attn_output, _ = self.mha(x, x, x, mask)
+        attn_output = self.dropout1(attn_output, training=training)
+        out1 = self.layernorm1(x + attn_output)
+        hidden_output = self.dense_hidden(out1)
+        output = self.dense_output(hidden_output)
+        output = self.dropout2(output, training=training)
+        output = self.layernorm2(out1 + output)
+        return output
