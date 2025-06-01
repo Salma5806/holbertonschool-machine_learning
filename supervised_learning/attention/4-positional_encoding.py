@@ -5,11 +5,10 @@ Calculates the positional encoding for a transformer"""
 
 def positional_encoding(max_seq_len, dm):
     """"Calculates the positional encoding for a transformer"""
-    pe = np.zeros((max_seq_len, dm))
-    for i in range(max_seq_len):
-        for m in range(dm):
-            if int(m) % 2 == 0:
-                pe[i,  m] = np.sin(i / (10000 ** (m/ dm)))
-            else:
-                pe[i, m] = np.cos(i / (10000 ** (m / dm)))
-    return pe
+    pos_encoding = np.zeros((max_seq_len, dm))
+    for i in range(dm):
+        for pos in range(max_seq_len):
+            pos_encoding[pos, i] = pos / np.power(10000, (2 * (i // 2) / dm))
+    pos_encoding[:, 0::2] = np.sin(pos_encoding[:, 0::2])
+    pos_encoding[:, 1::2] = np.cos(pos_encoding[:, 1::2])
+    return pos_encoding
