@@ -13,26 +13,28 @@ class Encoder(tf.keras.layers.Layer):
         """
         Class constructor for the Transformer Encoder.
         """
-        self.N =N
+        super(Encoder, self).__init__()
+        self.N = N
         self.dm = dm
-        self.h = h
-        self.hidden = hidden
-        self.input_vocab = input_vocab
-        self.max_seq_len = max_seq_len
-        self.drop_rate = drop_rate
-        self.embedding = tf.keras.layers.Embedding(input_dim=input_vocab,
-                                                    output_dim=dm)
+
+        self.embedding = tf.keras.layers.Embedding(input_dim=input_vocab, output_dim=dm)
         self.positional_encoding = positional_encoding(max_seq_len, dm)
-        for block in range(N):
-            self.blocks = EncoderBlock(dm, h, hidden, drop_rate)
+
+        self.blocks = [EncoderBlock(dm, h, hidden, drop_rate) for _ in range(N)]
         self.dropout = tf.keras.layers.Dropout(drop_rate)
 
     def call(self, x, training, mask):
         """
         Forward pass of the encoder.
         """
+        seq_len = tf.shape(x)[1]
         x = self.embedding(x)
-        x = x + self.positional_encoding
-        x = self.blocks(x, training, mask)
+        x *= tf.math.sqrt(tf.cast(self.dm, tf.float32))  # scale embedding
+        x += self.positional_encoding[:seq_len]
+
         x = self.dropout(x, training=training)
+
+        for block in self.blocks:
+            x = block(x, training, mask)
+
         return x
