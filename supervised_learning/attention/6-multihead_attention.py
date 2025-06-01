@@ -23,7 +23,7 @@ class MultiHeadAttention(Layer):
 
     def call(self, Q, K, V, mask):
         """
-        Forward pass for the MultiHeadAttention layer"""
+        Perform the forward pass for multi-head attention"""
         batch_size = tf.shape(Q)[0]
 
         Q = self.Wq(Q)
