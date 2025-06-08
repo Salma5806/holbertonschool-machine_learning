@@ -2,6 +2,7 @@
 """Task 0"""
 
 import tensorflow_datasets as tfds
+import transformers
 
 
 class Dataset:
