@@ -2,7 +2,7 @@
 """Task 0"""
 
 import tensorflow_datasets as tfds
-import transformers
+from transformers import AutoTokenizer
 
 
 class Dataset:
