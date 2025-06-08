@@ -23,10 +23,10 @@ class Dataset:
 
     def tokenize_dataset(self, data):
         """Tokenizes the dataset"""
-        tokenized_pt, tokenized_en = [], []
-        for pt, en in data:
-            pt_str = pt.numpy().decode('utf-8')
-            en_str = en.numpy().decode('utf-8')
-            tokenized_pt.append(self.tokenizer_pt.encode(pt_str))
-            tokenized_en.append(self.tokenizer_en.encode(en_str))
-        return tokenized_pt, tokenized_en
+        tokenizer_pt = tfds.deprecated.text.SubwordTextEncoder.build_from_corpus(
+            (pt.numpy() for pt, _ in data), target_vocab_size=2**15
+        )
+        tokenizer_en = tfds.deprecated.text.SubwordTextEncoder.build_from_corpus(
+            (en.numpy() for _, en in data), target_vocab_size=2**15
+        )
+        return tokenizer_pt, tokenizer_en
