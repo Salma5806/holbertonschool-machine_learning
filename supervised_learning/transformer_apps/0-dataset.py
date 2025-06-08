@@ -3,7 +3,6 @@
 
 import tensorflow_datasets as tfds
 import transformers
-from transformers import AutoTokenizer
 
 class Dataset:
     """
@@ -19,8 +18,8 @@ class Dataset:
                                     split='train', as_supervised=True)
         self.data_valid = tfds.load('ted_hrlr_translate/pt_to_en',
                                     split='validation', as_supervised=True)
-        self.tokenizer_pt = AutoTokenizer.from_pretrained("neuralmind/bert-base-portuguese-cased")
-        self.tokenizer_en = AutoTokenizer.from_pretrained("bert-base-uncased")
+        self.tokenizer_pt = transformers.AutoTokenizer.from_pretrained("neuralmind/bert-base-portuguese-cased")
+        self.tokenizer_en = transformers.AutoTokenizer.from_pretrained("bert-base-uncased")
 
     def tokenize_dataset(self, data):
         """Tokenizes the dataset"""
