@@ -8,7 +8,9 @@ import numpy as np
 
 def play(env, Q, max_steps=100):
     """
-    Plays an episode using the trained Q-table by always exploiting the best action."""
+    Plays an episode using the trained Q-table by always exploiting
+    the best action.
+    """
     state, _ = env.reset()
     rendered_outputs = [env.render()]
     total_reward = 0
