@@ -1,31 +1,24 @@
 #!/usr/bin/env python3
-"""has the trained agent play an episode"""
+
+"""
+Function for a trained agent to play one episode in the FrozenLakeEnv environment.
+"""
 import numpy as np
-import time
 
 
 def play(env, Q, max_steps=100):
-    """has the trained agent play an episode
-    @env: the FrozenLakeEnv instance
-    @Q: a numpy.ndarray containing the Q-table
-    @max_steps: the maximum number of steps in the episode
-    *Each state of the board should be displayed via the console
-    *You should always exploit the Q-table
-    Returns: total rewards for the episode
     """
-    rewards = 0
-    state = env.reset()
+    Plays an episode using the trained Q-table by always exploiting the best action."""
+    state, _ = env.reset()
+    rendered_outputs = [env.render()]
+    total_reward = 0
+
     for step in range(max_steps):
-        env.render()
-        time.sleep(0.3)
-
-        action = np.argmax(Q[state])
-        new_state, reward, done, info = env.step(action)
-
-        rewards += reward
+        action = np.argmax(Q[state, :])
+        state, reward, done, _, _ = env.step(action)
+        rendered_outputs.append(env.render())
+        total_reward += reward
         if done:
-            env.render()
             break
-        state = new_state
 
-    return rewards
+    return total_reward, rendered_outputs
