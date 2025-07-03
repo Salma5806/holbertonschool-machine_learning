@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 """
-Function for a trained agent to play one episode in the FrozenLakeEnv environment.
+Function for a trained agent to play one episode in the
+FrozenLakeEnv environment.
 """
 import numpy as np
 
