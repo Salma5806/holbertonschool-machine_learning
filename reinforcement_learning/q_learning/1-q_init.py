@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
-"""initializes q table"""
+
+"""
+A function that initializes the Q-table.
+"""
+
 import numpy as np
 
 
 def q_init(env):
-    """initializes q table
-    @env: the FrozenLakeEnv instance
-    Return: the Q-table as np.ndarray of zeros
     """
-    action_envr_size = env.action_envr.n
-    state_envr_size = env.observation_envr.n
+    Initializes the Q-table for the given environment.
 
-    Q_table = np.zeros((state_envr_size, action_envr_size))
+    Parameters:
+    - env: the FrozenLakeEnv instance
 
-    return Q_table
+    Returns:
+    - A NumPy ndarray filled with zeros, with shape
+      (number of states, number of actions)
+    """
+    q_table = np.zeros((env.observation_space.n, env.action_space.n))
+    return q_table
