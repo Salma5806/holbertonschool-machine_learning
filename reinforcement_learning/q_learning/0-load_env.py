@@ -8,12 +8,15 @@ the map, choose whether the ice is slippery, and set the render mode.
 
 import gymnasium as gym
 
-def load_frozen_lake(desc=None, map_name=None, is_slippery=False, render_mode=None):
+
+def load_frozen_lake(desc=None, map_name=None,
+                     is_slippery=False, render_mode=None):
     """Loads the Frozen Lake environment with optional customization"""
     env = gym.make(
         'FrozenLake-v1',
         desc=desc,
         map_name=map_name,
         is_slippery=is_slippery,
-        render_mode="ansi")
+        render_mode="ansi"
+    )
     return env
