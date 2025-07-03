@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
 
 """
-This module contains the epsilon_greedy function, which balances
-exploration and exploitation for action selection in reinforcement learning.
+epsilon greedy is a function to balance between exploration and exploitation
 """
-
 import numpy as np
 
 
 def epsilon_greedy(Q, state, epsilon):
     """
-    Selects an action using the epsilon-greedy policy.
-
-    Parameters:
-    - Q (np.ndarray): The Q-table
-    - state (int): The current state index
-    - epsilon (float): The exploration rate (between 0 and 1)
-
-    Returns:
-    - int: The index of the selected action
+    * Q is a numpy.ndarray containing the q-table
+    * state is the current state
+    * epsilon is the epsilon to use for the calculation
+    * You should sample p with numpy.random.uniform to determine
+      if your algorithm should explore or exploit
+    * If exploring, you should pick the next action with
+      numpy.random.randint from all possible actions
+    * Returns: the next action index
     """
     p = np.random.uniform(0, 1)
     if p < epsilon:
