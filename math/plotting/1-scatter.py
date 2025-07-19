@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""1. Scatter Plot
+This module plots men's height vs weight as a scatter plot.
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,7 +16,7 @@ def scatter():
     y += 180
     plt.figure(figsize=(6.4, 4.8))
     plt.scatter(x, y, color='magenta')
-    plt.xlabel('Height (in)')
+    plt.xlabel('Height (in)')          
     plt.ylabel('Weight (lbs)')
     plt.title("Men's Height vs Weight")
     plt.show()
