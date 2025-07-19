@@ -1,21 +1,38 @@
 #!/usr/bin/env python3
+"""import modules"""
 import numpy as np
 import matplotlib.pyplot as plt
 
-np.random.seed(5)
-fruit = np.random.randint(0, 20, (4,3))
-fruits = ['apples', 'bananas', 'oranges', 'peache']
-color = ['red', 'yellow', '#ff8000', '#ffe5b4']
-plt.bar(range(3), fruit[0], color=color[0], label=fruits[0])
-bottom = fruit[0]
-for i in range(1, 4):
-    plt.bar(range(3), fruit[i], color=color[i], label=fruits[i], bottom=bottom)
-    bottom += fruit[i]
-plt.xticks(range(3), ['Farrah', 'Fred', 'Felicia'])
-plt.ylim((0, 80))
-plt.xlabel('People')
-plt.ylabel('Quantity of Fruit')
-plt.title('Number of Fruit per Person')
 
-plt.yticks(np.arange(0, 81, 10))
-plt.savefig('my6graph')
+def bars():
+    """
+    Plot a bar chart showing the quantity of fruit per person.
+
+    This function generates a bar chart using randomly generated
+    data for the quantity of fruit
+    for each person. The chart displays the number of apples, bananas,
+    oranges, and peaches for
+    three individuals: Farrah, Fred, and Felicia.
+
+    Returns:
+        None
+    """
+    np.random.seed(5)
+    fruit = np.random.randint(0, 20, (4, 3))
+    plt.figure(figsize=(6.4, 4.8))
+    fig, ax = plt.subplots()
+    people = ["Farrah", "Fred", "Felicia"]
+    colors = ['red', 'yellow', '#ff8000', '#ffe5b4']
+    fruits = ['apples', 'bananas', 'oranges', 'peaches']
+    bottom = np.zeros(len(people))
+    for i, row in enumerate(fruit):
+        ax.bar(people, row, bottom=bottom,
+               color=colors[i], label=fruits[i], width=0.5)
+        bottom += row
+
+    ax.set_ylabel('Quantity of Fruit')
+    ax.set_title('Number of Fruit per Person')
+    ax.set_ylim([0, 80])
+    ax.set_yticks(np.arange(0, 81, 10))
+    ax.legend()
+    plt.show()
