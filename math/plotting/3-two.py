@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """3. Two Line Graphs
-This script plots the exponential decay of two radioactive elements: C-14 and Ra-226.
+This script plots the exponential decay of two radioactive elements:
+C-14 and Ra-226.
 """
 
 import numpy as np
