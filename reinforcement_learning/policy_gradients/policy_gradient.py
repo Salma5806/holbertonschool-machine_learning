@@ -20,13 +20,14 @@ def policy(matrix, weight):
     return policy
 def policy_gradient(state, weight):
     """
-    Computing the needed gradient for
-    the monte carlo policy gradient
-    REINFORCE
+    Compute gradient for Monte Carlo
+    Policy Gradient (REINFORCE)
     """
     probs = policy(state, weight)
-    action = np.random.choice(len(probs), p=probs)
-    dsoftmax = probs.copy()
+    # Choose an action
+    action = np.random.choice(len(probs), p=probs.flatten())
+    # Compute gradient
+    dsoftmax = probs.flatten()
     dsoftmax[action] -= 1
     grad = np.dot(state.T, dsoftmax.reshape(-1, 1))
     return action, grad
