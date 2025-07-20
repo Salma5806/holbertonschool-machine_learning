@@ -25,7 +25,8 @@ def policy_gradient(state, weight):
     REINFORCE
     """
     probs = policy(state, weight)
-    action = np.random.choice(len(probs[0]), p=probs[0])
-    probs[0, action] -= 1
-    grad = np.dot(state.T, probs)
+    action = np.random.choice(len(probs), p=probs)
+    dsoftmax = probs.copy()
+    dsoftmax[action] -= 1
+    grad = np.dot(state.T, dsoftmax.reshape(-1, 1))
     return action, grad
