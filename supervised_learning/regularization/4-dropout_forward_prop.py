@@ -7,28 +7,37 @@ Defines function that conducts forward propagation using Dropout
 import numpy as np
 
 
-def dropout_forward_prop(X, weights, L, keep_prob):
-    """Conducts forward propagation using Dropout"""
-    cache = {}
-    cache['A0'] = X
-    m = X.shape[1]
+def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
+    """
+    Updates the weights and biases of a neural network using gradient descent with dropout.
 
-    for i in range(1, L + 1):
-        W = weights['W' + str(i)]
-        b = weights['b' + str(i)]
-        A_prev = cache['A' + str(i - 1)]
+    Args:
+        Y: numpy.ndarray of shape (classes, m), one-hot true labels
+        weights: dict of weights and biases
+        cache: dict containing activations and dropout masks
+        alpha: learning rate
+        keep_prob: probability of keeping a node active during dropout
+        L: number of layers in the network
+    """
+    m = Y.shape[1]
+    dZ = cache['A' + str(L)] - Y  # derivative at output layer (softmax + cross-entropy)
 
-        Z = np.dot(W, A_prev) + b
-        if i == L:
-            A = np.exp(Z) / np.sum(np.exp(Z), axis=0)
-        else:
-            A = np.tanh(Z)
-            D = np.random.rand(A.shape[0], A.shape[1])
-            D = (D < keep_prob).astype(int)
-            A *= D
-            A /= keep_prob
-            cache['D' + str(i)] = D
+    for l in reversed(range(1, L + 1)):
+        A_prev = cache['A' + str(l - 1)]
 
-        cache['A' + str(i)] = A
+        dW = (1 / m) * np.matmul(dZ, A_prev.T)
+        db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
 
-    return cache
+        weights['W' + str(l)] -= alpha * dW
+        weights['b' + str(l)] -= alpha * db
+
+        if l > 1:
+            W = weights['W' + str(l)]
+            dA_prev = np.matmul(W.T, dZ)
+
+            # Apply dropout mask and scale the gradient
+            dA_prev *= cache['D' + str(l - 1)]
+            dA_prev /= keep_prob
+
+            # Derivative of tanh: 1 - (A_prev)^2
+            dZ = dA_prev * (1 - A_prev ** 2)
