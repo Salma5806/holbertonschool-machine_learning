@@ -1,33 +1,31 @@
 #!/usr/bin/env python3
 """
-Creates a neural network layer in TensorFlow with L2 regularization.
+Calculates the cost of a neural network with L2 regularization in TensorFlow.
 """
 
 import tensorflow as tf
 
 
-def l2_reg_create_layer(prev, n, activation, lambtha):
+def l2_reg_cost(cost, model):
     """
-    Creates a dense layer with L2 regularization.
+    Calculates total cost including L2 regularization.
 
     Args:
-        prev: tensor, output from the previous layer
-        n: int, number of nodes in the new layer
-        activation: activation function to apply
-        lambtha: float, L2 regularization parameter
+        cost: Tensor, base cost without L2
+        model: Keras model with L2 regularization
 
     Returns:
-        The output tensor of the created layer.
+        Tensor with L2 regularization costs for each layer and total cost
     """
-    # Define L2 regularizer for weights
-    l2_regularizer = tf.keras.regularizers.L2(l2=lambtha)
+    # Collect L2 penalties from the model
+    l2_losses = [tf.reduce_sum(tf.square(layer.kernel)) * layer.kernel_regularizer.l2
+                 for layer in model.layers if hasattr(layer, 'kernel_regularizer') and layer.kernel_regularizer]
 
-    # Create Dense layer with kernel regularization and VarianceScaling init
-    dense = tf.keras.layers.Dense(
-        units=n,
-        activation=activation,
-        kernel_initializer=tf.keras.initializers.VarianceScaling(mode='fan_avg'),
-        kernel_regularizer=l2_regularizer
-    )
+    # Convert to TensorFlow tensor
+    l2_losses = [tf.convert_to_tensor(v) for v in l2_losses]
 
-    return dense(prev)
+    # Total L2 regularization
+    total_l2 = tf.add_n(l2_losses) if l2_losses else 0.0
+
+    # Return combined costs: [layer1, layer2, ..., base_cost]
+    return tf.convert_to_tensor(l2_losses + [cost])
