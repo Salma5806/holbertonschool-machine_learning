@@ -1,32 +1,58 @@
 #!/usr/bin/env python3
-"""
-Defines function that updates the weights with Dropout regularization
-using gradient descent
-"""
-
+""" Task 5"""
 import numpy as np
 
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
-    """Updates the weights with Dropout regularization 
-    using gradient descent"""
-    m = Y.shape[1]
-    W_copy = weights.copy()
+    """Performs one pass of gradient descent on the weights of
+    a neural network with dropout"""
 
-    for i in reversed(range(L)):
-        A = cache["A" + str(i + 1)]
-        if i == L - 1:
-            dZ = A - Y
-            dW = (np.matmul(cache["A" + str(i)], dZ.T) / m).T
-            db = np.sum(dZ, axis=1, keepdims=True) / m
+    m = Y.shape[1]
+    dz = {}
+    dW = {}
+    db = {}
+    da = {}
+    for la in reversed(range(1, L + 1)):
+        A = cache["A{}".format(la)]
+        A_prev = cache["A{}".format(la - 1)]
+
+        # 3
+        if la == L:
+            kdz = "dz{}".format(la)
+            kdW = "dW{}".format(la)
+            kdb = "db{}".format(la)
+
+            dz[kdz] = A - Y
+            dW[kdW] = np.matmul(dz[kdz], A_prev.T) / m
+            db[kdb] = dz[kdz].sum(axis=1, keepdims=True) / m
+
         else:
-            dW2 = np.matmul(W_copy["W" + str(i + 2)].T, dZ2)
-            dtanh = 1 - (A * A)
-            dZ = dW2 * dtanh
-            dZ = dZ * cache["D" + str(i + 1)]
-            dZ = dZ / keep_prob
-            dW = np.matmul(dZ, cache["A" + str(i)].T) / m
-            db = np.sum(dZ, axis=1, keepdims=True) / m
-        weights["W" + str(i + 1)] = (W_copy["W" + str(i + 1)] - (alpha * dW))
-        weights["b" + str(i + 1)] = W_copy["b" + str(i + 1)] - (alpha * db)
-        dZ2 = dZ
+            # 2 - 1
+            kdz_n = "dz{}".format(la + 1)
+            kdz_c = "dz{}".format(la)
+            kdW_n = "dW{}".format(la + 1)
+            kdW = "dW{}".format(la)
+            kdb_n = "db{}".format(la + 1)
+            kdb = "db{}".format(la)
+            kda = "da{}".format(la)
+            kW = 'W{}'.format(la + 1)
+            kb = 'b{}'.format(la + 1)
+            kd = 'D{}'.format(la)
+
+            W = weights[kW]
+            D = cache[kd]
+
+            da[kda] = np.matmul(W.T, dz[kdz_n])
+            da[kda] *= D
+            da[kda] /= keep_prob
+
+            dz[kdz_c] = da[kda] * (1 - (A * A))
+            dW[kdW] = np.matmul(dz[kdz_c], A_prev.T) / m
+            db[kdb] = dz[kdz_c].sum(axis=1, keepdims=True) / m
+
+            weights[kW] -= alpha * dW[kdW_n]
+            weights[kb] -= alpha * db[kdb_n]
+
+            if la == 1:
+                weights['W1'] -= alpha * dW['dW1']
+                weights['b1'] -= alpha * db['db1']
