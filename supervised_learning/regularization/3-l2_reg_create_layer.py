@@ -1,29 +1,34 @@
 #!/usr/bin/env python3
 """
-Creates a neural network layer in TensorFlow with L2 regularization.
+Calculates cost with L2 regularization for a Keras model.
 """
 
 import tensorflow as tf
 
 
-def l2_reg_create_layer(prev, n, activation, lambtha):
+def l2_reg_cost(cost, model):
     """
-    Creates a dense layer with L2 regularization.
+    Adds L2 regularization cost from the model's layers to the given cost.
 
     Args:
-        prev: tensor, output of the previous layer
-        n: int, number of nodes in the new layer
-        activation: activation function for the layer
-        lambtha: float, L2 regularization parameter
+        cost: tensor, base cost without regularization
+        model: tf.keras.Model, includes layers with L2 regularization
 
     Returns:
-        The output tensor of the created layer.
+        A tensor containing:
+        - regularization terms per layer
+        - total regularized cost
     """
-    l2_regularizer = tf.keras.regularizers.L2(lambtha)
-    dense_layer = tf.keras.layers.Dense(
-        units=n,
-        activation=activation,
-        kernel_initializer=tf.keras.initializers.VarianceScaling(mode='fan_avg'),
-        kernel_regularizer=l2_regularizer
-    )
-    return dense_layer(prev)
+    reg_terms = []
+    total_reg = 0.0
+
+    for layer in model.layers:
+        if layer.losses:  # each layer with regularizer contributes here
+            layer_reg = tf.add_n(layer.losses)
+            reg_terms.append(layer_reg)
+            total_reg += layer_reg
+        else:
+            reg_terms.append(tf.constant(0.0))
+
+    total_cost = cost + total_reg
+    return tf.concat([tf.stack(reg_terms), tf.reshape(total_cost, (1,))], axis=0)
