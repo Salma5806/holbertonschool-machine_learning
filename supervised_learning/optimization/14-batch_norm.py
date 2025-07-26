@@ -25,5 +25,7 @@ def create_batch_norm_layer(prev, n, activation):
     gamma = tf.Variable(tf.ones([n]), trainable=True)
     beta = tf.Variable(tf.zeros([n]), trainable=True)
     epsilon = 1e-7
-    normalized = tf.nn.batch_normalization(z, mean, variance, beta, gamma, epsilon)
+    normalized = tf.nn.batch_normalization(
+    z, mean, variance, beta, gamma, epsilon
+)
     return activation(normalized)
