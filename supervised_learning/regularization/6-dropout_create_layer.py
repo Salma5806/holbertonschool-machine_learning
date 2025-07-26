@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-creates a layer of a neural network using dropout:
+creating a dropout layer
+its widely used for regularization
 """
 
 import tensorflow.compat.v1 as tf
@@ -8,16 +9,20 @@ import tensorflow.compat.v1 as tf
 
 def dropout_create_layer(prev, n, activation, keep_prob):
     """
-    creates a layer of a neural network using dropout:
+    the dropout work by randomly setting some neurons
+    weights to 0 during training to avoid
+    overfitingon any used model or
+    previous layer
     """
     init = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
-    
-    layer = tf.layers.Dense(
-        units=n,
-        activation=activation,
-        kernel_initializer=init
-    )(prev)
+    weights = tf.get_variable("weights", shape=[int(prev.shape[1]), n], initializer=init)
+    biases = tf.get_variable("biases", shape=[n], initializer=tf.zeros_initializer())
+    z = tf.add(tf.matmul(prev, weights), biases)
+    if activation is not None:
+        a = activation(z)
+    else:
+        a = z
+    dropout = tf.layers.Dropout(rate=1 - keep_prob, training=True)
+    output = dropout(a)
 
-    dropout = tf.layers.Dropout(rate=1 - keep_prob)(layer)
-
-    return dropout
+    return output
