@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Defines function that conducts forward propagation using Dropout
+Defines function that updates weights using gradient descent with Dropout regularization
 """
 
 import numpy as np
@@ -19,7 +19,8 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
         L: number of layers in the network
     """
     m = Y.shape[1]
-    dZ = cache['A' + str(L)] - Y  # derivative at output layer (softmax + cross-entropy)
+    # derivative at output layer (softmax + cross-entropy)
+    dZ = cache['A' + str(L)] - Y
 
     for l in reversed(range(1, L + 1)):
         A_prev = cache['A' + str(l - 1)]
@@ -38,5 +39,5 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
             dA_prev *= cache['D' + str(l - 1)]
             dA_prev /= keep_prob
 
-            # Derivative of tanh: 1 - (A_prev)^2
+            # Derivative of tanh activation: 1 - A_prev^2
             dZ = dA_prev * (1 - A_prev ** 2)
