@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
-"""Defines a layer for a neural network"""
-
+"""
+Creating the neural network using
+tensorflow
+"""
 
 
 import tensorflow.compat.v1 as tf
 
+
 def create_layer(prev, n, activation):
-    """Creates a layer for a neural network"""
+    """
+    creating a dense layer to give the output
+    of our neural network
+    """
     init = tf.keras.initializers.VarianceScaling(mode='fan_avg')
-    layer = tf.layers.Dense(units=n, activation=activation, kernel_initializer=init, name='layer')(prev)
-    return layer
+    layer = tf.layers.Dense(units=n, activation=activation, kernel_initializer=init, name='layer')
+    return layer(prev)
