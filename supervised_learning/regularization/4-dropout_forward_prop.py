@@ -3,7 +3,6 @@
 Defines function that conducts forward propagation using Dropout
 """
 
-
 import numpy as np
 
 
