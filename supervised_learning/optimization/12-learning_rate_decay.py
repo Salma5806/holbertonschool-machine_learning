@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
-""" t creates a learning rate decay operation
-in tensorflow using inverse time decay """
+"""
+Create a learning rate decay schedule using inverse time decay
+"""
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 
-def learning_rate_decay(alpha, decay_rate, global_step, decay_step):
+def learning_rate_decay(alpha, decay_rate, decay_step):
     """
-    Creates a learning rate decay operation
- in TensorFlow using inverse time decay.
+    Creates a learning rate decay operation in TensorFlow using inverse time decay.
 
     Args:
-        alpha: The original learning rate as a TensorFlow variable.
-        decay_rate: The weight used to determine
- the rate at which alpha will decay.
-        global_step: The TensorFlow variable
-representing the number of passes of gradient descent that have elapsed.
-        decay_step: The number of passes of
-gradient descent that should occur before alpha is decayed further.
+        alpha (float): initial learning rate
+        decay_rate (float): decay rate for learning rate
+        decay_step (int): number of steps before applying decay
+
     Returns:
-        The learning rate decay operation as a TensorFlow variable.
+        learning_rate_schedule (tf.keras.optimizers.schedules.LearningRateSchedule):
+            a learning rate schedule
     """
-    updated_alpha = tf.train.inverse_time_decay(
-        alpha, global_step, decay_step, decay_rate, staircase=True)
-    return updated_alpha
+    return tf.keras.optimizers.schedules.InverseTimeDecay(
+        initial_learning_rate=alpha,
+        decay_steps=decay_step,
+        decay_rate=decay_rate,
+        staircase=True  # ensures stepwise decay
+    )
