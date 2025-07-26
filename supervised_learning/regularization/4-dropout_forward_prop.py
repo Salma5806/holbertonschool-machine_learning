@@ -19,7 +19,6 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
         L: number of layers in the network
     """
     m = Y.shape[1]
-    # derivative at output layer (softmax + cross-entropy)
     dZ = cache['A' + str(L)] - Y
 
     for l in reversed(range(1, L + 1)):
@@ -35,9 +34,7 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
             W = weights['W' + str(l)]
             dA_prev = np.matmul(W.T, dZ)
 
-            # Apply dropout mask and scale the gradient
             dA_prev *= cache['D' + str(l - 1)]
             dA_prev /= keep_prob
 
-            # Derivative of tanh activation: 1 - A_prev^2
             dZ = dA_prev * (1 - A_prev ** 2)
