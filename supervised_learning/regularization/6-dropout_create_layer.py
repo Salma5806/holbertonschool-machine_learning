@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python3
 """creates a layer of a neural network using dropout"""
 
 
