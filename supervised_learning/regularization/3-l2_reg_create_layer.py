@@ -1,19 +1,33 @@
 #!/usr/bin/env python3
-"""creates a tensorflow layer that includes L2 regularization"""
-
+"""
+Creates a neural network layer in TensorFlow with L2 regularization.
+"""
 
 import tensorflow as tf
 
 
 def l2_reg_create_layer(prev, n, activation, lambtha):
     """
-    creates a TensorFlow layer that includes L2 regularization
-    """
+    Creates a dense layer with L2 regularization.
 
-    initializer = tf.contrib.layers.variance_scaling_initializer(
-        mode="FAN_AVG")
-    regularizer = tf.contrib.layers.l2_regularizer(lambtha)
-    layer = tf.layers.Dense(units=n, activation=activation,
-                            kernel_initializer=initializer,
-                            kernel_regularizer=regularizer)
-    return layer(prev)
+    Args:
+        prev: tensor, output from the previous layer
+        n: int, number of nodes in the new layer
+        activation: activation function to apply
+        lambtha: float, L2 regularization parameter
+
+    Returns:
+        The output tensor of the created layer.
+    """
+    # Define L2 regularizer for weights
+    l2_regularizer = tf.keras.regularizers.L2(l2=lambtha)
+
+    # Create Dense layer with kernel regularization and VarianceScaling init
+    dense = tf.keras.layers.Dense(
+        units=n,
+        activation=activation,
+        kernel_initializer=tf.keras.initializers.VarianceScaling(mode='fan_avg'),
+        kernel_regularizer=l2_regularizer
+    )
+
+    return dense(prev)
