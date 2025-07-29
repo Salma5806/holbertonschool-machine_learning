@@ -6,32 +6,30 @@ import numpy as np
 def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
     """ performs forward propagation over a convolutional
         layer of a neural network """
-    m, h_prev, w_prev, c_prev = A.shape
+   m, h_pr, w_pr, c_pr = A_prev.shape
     kh, kw, _, c_new = W.shape
     sh, sw = stride
 
-    if padding == 'valid':
-        ph, pw = 0, 0
-    else:
-        ph = int(np.ceil((h_prev * sh - sh + kh - h_prev) / 2))
-        pw = int(np.ceil((w_prev * sw - sw + kw - w_prev) / 2))
-    h_new = int((h_prev + 2 * ph - kh) / sh) + 1
-    w_new = int((w_prev + 2 * pw - kw) / sw) + 1
-    npad = ((0, 0), (ph, ph), (pw, pw), (0, 0))
-    A_prev_padded = np.pad(
-        A,
-        pad_width=npad,
-        mode='constant',
-        constant_values=0)
-    output = np.zeros((m, h_new, w_new, c_new))
+    output_h = int(((h_pr - kh) / sh) + 1)
+    output_w = int(((w_pr - kw) / sw) + 1)
+    if padding == "valid":
+        A_prev = A_prev
+    if padding == "same":
+        pad_h = int(((h_pr - 1) * sh + kh - h_pr) // 2)
+        pad_w = int(((w_pr - 1) * sw + kw - w_pr) // 2)
+        A_prev = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
+                                 (pad_w, pad_w),
+                                 (0, 0)),
+                                 mode='constant',
+                                 constant_values=0)
+        output_h = h_pr
+        output_w = w_pr
 
-    for i in range(m):
-        for j in range(h_new):
-            for k in range(w_new):
-                for x in range(c_new):
-                    output[i, j, k, x] = np.sum(
-                        A_prev_padded[i, j * sh: j * sh + kh,
-                                      k * sw: k * sw + kw, :]
-                        * W[:, :, :, x])
-    A = activation(output + b)
-    return A
+    A = np.zeros(shape=(m, output_h, output_w, c_new))
+    for h in range(output_h):
+        for w in range(output_w):
+            for c in range(c_new):
+                a_slice_prev = A_prev[:,h * sh : h * sh + kh,w * sw : w * sw + kw,:]
+                W_c = W[:, :, :, c]
+                A[:, h, w, c] = np.sum(a_slice_prev * W_c, axis=(1, 2, 3))                    
+    return activation(A + b)
