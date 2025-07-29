@@ -6,31 +6,32 @@ import numpy as np
 def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
     """ performs forward propagation over a convolutional
         layer of a neural network """
-    m, h_prev, w_prev, c_prev = A_prev.shape
-    kh, kw, c_prev, c_new = W.shape
+    m, h_prev, w_prev, c_prev = A.shape
+    kh, kw, _, c_new = W.shape
     sh, sw = stride
-    if padding == 'same':
-        pad_h = int(((h_prev * (sh - 1)) - sh + kh) / 2)
-        pad_w = int(((w_prev * (sw - 1)) - sw + kw) / 2)
-    elif type(padding) == tuple:
-        pad_h, pad_w = padding
+
+    if padding == 'valid':
+        ph, pw = 0, 0
     else:
-        pad_h = 0
-        pad_w = 0
-    img_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
-                              (pad_w, pad_w), (0, 0)),
-                     'constant', constant_values=(0))
-    img_pad_h = img_pad.shape[1]
-    img_pad_w = img_pad.shape[2]
-    h_out = int((img_pad_h - kh) / sh) + 1
-    w_out = int((img_pad_w - kw) / sw) + 1
-    result = np.zeros((m, h_out, w_out, c_new))
-    for i in range(h_out):
-        for j in range(w_out):
-            for k in range(c_new):
-                result[:, i, j, k] = np.sum(img_pad[:,
-                                                    i * sh: i * sh + kh,
-                                                    j * sw: j * sw + kw] *
-                                            W[:, :, :, k],
-                                            axis=(1, 2, 3))
-    return activation(result + b)
+        ph = int(np.ceil((h_prev * sh - sh + kh - h_prev) / 2))
+        pw = int(np.ceil((w_prev * sw - sw + kw - w_prev) / 2))
+    h_new = int((h_prev + 2 * ph - kh) / sh) + 1
+    w_new = int((w_prev + 2 * pw - kw) / sw) + 1
+    npad = ((0, 0), (ph, ph), (pw, pw), (0, 0))
+    A_prev_padded = np.pad(
+        A,
+        pad_width=npad,
+        mode='constant',
+        constant_values=0)
+    output = np.zeros((m, h_new, w_new, c_new))
+
+    for i in range(m):
+        for j in range(h_new):
+            for k in range(w_new):
+                for x in range(c_new):
+                    output[i, j, k, x] = np.sum(
+                        A_prev_padded[i, j * sh: j * sh + kh,
+                                      k * sw: k * sw + kw, :]
+                        * W[:, :, :, x])
+    A = activation(output + b)
+    return A
