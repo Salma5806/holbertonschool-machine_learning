@@ -18,9 +18,14 @@ def convolve(images, kernels, padding='same', stride=(1, 1)):
 
     else:
         ph, pw = padding
+    # Compute the output shape
     oh = int((h - kh + 2 * ph) / sh + 1)
     ow = int((w - kw + 2 * pw) / sw + 1)
+
+    # Initialize the output array
     output = np.zeros(shape=(m, oh, ow, nc))
+
+    # Loop over the images and the output dimensions
     images_padded = np.pad(
         images,
         [
