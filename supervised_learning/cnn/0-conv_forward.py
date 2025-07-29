@@ -1,35 +1,46 @@
 #!/usr/bin/env python3
-""" Convolution of a layer """
+""" Convolutional forward propagation """
 import numpy as np
 
 
 def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
-    """ performs forward propagation over a convolutional
-        layer of a neural network """
-   m, h_pr, w_pr, c_pr = A_prev.shape
+    """Performs forward propagation over a convolutional layer"""
+    m, h_prev, w_prev, c_prev = A_prev.shape
     kh, kw, _, c_new = W.shape
     sh, sw = stride
 
-    output_h = int(((h_pr - kh) / sh) + 1)
-    output_w = int(((w_pr - kw) / sw) + 1)
-    if padding == "valid":
-        A_prev = A_prev
-    if padding == "same":
-        pad_h = int(((h_pr - 1) * sh + kh - h_pr) // 2)
-        pad_w = int(((w_pr - 1) * sw + kw - w_pr) // 2)
-        A_prev = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
-                                 (pad_w, pad_w),
-                                 (0, 0)),
-                                 mode='constant',
-                                 constant_values=0)
-        output_h = h_pr
-        output_w = w_pr
+    if padding == 'same':
+        pad_h = int(np.ceil(((h_prev - 1) * sh + kh - h_prev) / 2))
+        pad_w = int(np.ceil(((w_prev - 1) * sw + kw - w_prev) / 2))
+    else:  # 'valid'
+        pad_h, pad_w = 0, 0
 
-    A = np.zeros(shape=(m, output_h, output_w, c_new))
-    for h in range(output_h):
-        for w in range(output_w):
-            for c in range(c_new):
-                a_slice_prev = A_prev[:,h * sh : h * sh + kh,w * sw : w * sw + kw,:]
-                W_c = W[:, :, :, c]
-                A[:, h, w, c] = np.sum(a_slice_prev * W_c, axis=(1, 2, 3))                    
-    return activation(A + b)
+    A_prev_padded = np.pad(
+        A_prev,
+        ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)),
+        mode='constant',
+        constant_values=0
+    )
+
+    h_new = int((h_prev + 2 * pad_h - kh) / sh) + 1
+    w_new = int((w_prev + 2 * pad_w - kw) / sw) + 1
+    A = np.zeros((m, h_new, w_new, c_new))
+
+    for i in range(h_new):
+        for j in range(w_new):
+            for k in range(c_new):
+                vert_start = i * sh
+                vert_end = vert_start + kh
+                horiz_start = j * sw
+                horiz_end = horiz_start + kw
+
+                A_slice = A_prev_padded[:, vert_start:vert_end,
+                                        horiz_start:horiz_end, :]
+
+                A[:, i, j, k] = np.sum(
+                    A_slice * W[:, :, :, k],
+                    axis=(1, 2, 3)
+                )
+
+    Z = A + b
+    return activation(Z)
