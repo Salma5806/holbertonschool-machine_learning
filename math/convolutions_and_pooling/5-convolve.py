@@ -6,33 +6,38 @@ import numpy as np
 def convolve(images, kernels, padding='same', stride=(1, 1)):
     """cnvolve_grayscale"""
     m, h, w, c = images.shape
-    kh, kw, c, nc = kernels.shape
-    i_step, j_step = stride
+    kh, kw, _, nc = kernel.shape
 
-    if padding == 'same':
-        # solve n+2p-f+1 = n
-        p_h = int(np.ceil((i_step*(h-1)-h+kh)/2))
-        p_w = int(np.ceil((j_step*(w-1)-w+kw)/2))
-    elif padding == 'valid':
-        p_h, p_w = 0, 0
+    sh, sw = stride
 
-    elif type(padding) == tuple:
-        p_h, p_w = padding
+    if padding == "valid":
+        ph, pw = 0, 0
+    elif padding == "same":
+        ph = int((((h - 1) * sh + kh - h) / 2) + 1)
+        pw = int((((w - 1) * sw + kw - w) / 2) + 1)
 
-    output_h = int((h+2*p_h-kh)/i_step+1)
-    output_w = int((w+2*p_w-kw)/j_step+1)
-    padded_images = np.pad(
-        images, ((0, 0), (p_h, p_h), (p_w, p_w), (0, 0)),
-        mode='constant')
-    output = np.zeros((m, output_h, output_w, nc))
-    for i in range(0, output_h):
-        x = i*i_step
-        for j in range(0, output_w):
-            y = j*j_step
-            zoom_in = padded_images[:, x:x+kh, y:y+kw, :]
+    else:
+        ph, pw = padding
+    oh = int((h - kh + 2 * ph) / sh + 1)
+    ow = int((w - kw + 2 * pw) / sw + 1)
+    output = np.zeros(shape=(m, oh, ow, nc))
+    images_padded = np.pad(
+        images,
+        [
+            (0, 0),
+            (ph, ph),
+            (pw, pw),
+            (0, 0)
+        ],
+        mode="constant"
+    )
+
+    for x in range(oh):
+        for y in range(ow):
             for k in range(nc):
-                kernel = kernels[:, :, :, k]
-                product = kernel * zoom_in
-                pixel = np.sum(product, axis=(1, 2, 3))
-                output[:, i, j, k] = pixel
+                output[:, x, y, k] = np.sum(
+                    (kernel[:, :, :, k] * images_padded[:, x *sh:x * sh + kh, y * sw:y * sw + kw]),
+                    axis=(1, 2, 3)
+                )
+
     return output
