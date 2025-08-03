@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-building the core block of the
-residual neural network
+TASK 2
 """
 
 import tensorflow.keras as K
@@ -9,7 +8,7 @@ import tensorflow.keras as K
 
 def identity_block(A_prev, filters):
     """
-    explanation later goes here
+    identity
     """
     first_conv = K.layers.Conv2D(filters[0], kernel_size=(1, 1), strides=(1, 1), padding='same', kernel_initializer=K.initializers.he_normal(seed=None))(A_prev)
     first_bn = K.layers.BatchNormalization()(first_conv)
