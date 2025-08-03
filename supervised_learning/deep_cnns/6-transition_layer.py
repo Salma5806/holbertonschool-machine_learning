@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-""" Inception Block """
-import tensorflow.keras as K
+""" Task 6"""
+from tensorflow import keras as K
 
 
 def transition_layer(X, nb_filters, compression):
-    """transition layer for DenseNet"""
-    comp = int(nb_filters*compression)
-    batch1 = K.layers.BatchNormalization(axis=3)(X)
-    activation1 = K.layers.Activation('relu')(batch1)
-    conv1 = K.layers.Conv2D(filters=comp,
-                            kernel_size=(1, 1),
-                            padding='same',
-                            kernel_initializer='he_normal')(activation1)
-    avg_pool = K.layers.AveragePooling2D(pool_size=(2, 2), strides=(2, 2),
-                                         padding='same')(conv1)
-    return avg_pool, int(nb_filters*compression)
+    """Builds a transition layer for the DenseNet architecture"""
+    initializer = K.initializers.he_normal(seed=0)
+    my_layer = K.layers.BatchNormalization()(X)
+    my_layer = K.layers.Activation('relu')(my_layer)
+
+    nb_filters = int(nb_filters * compression)
+
+    my_layer = K.layers.Conv2D(filters=nb_filters,
+                               kernel_size=1,
+                               padding='same',
+                               kernel_initializer=initializer,
+                               )(my_layer)
+    X = K.layers.AveragePooling2D(pool_size=2,
+                                  padding='same')(my_layer)
+
+    return X, nb_filters
