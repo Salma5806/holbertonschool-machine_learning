@@ -15,6 +15,7 @@ def identity_block(A_prev, filters):
     """
     F11, F3, F12 = filters
     initializer = K.initializers.HeNormal(seed=0)
+
     X = K.layers.Conv2D(F11, (1, 1), padding='same',
                         kernel_initializer=initializer)(A_prev)
     X = K.layers.BatchNormalization(axis=3)(X)
