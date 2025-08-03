@@ -1,32 +1,33 @@
 #!/usr/bin/env python3
 """
-building the architecture
+Building the architecture
 needed to match the idea of the
-inception blocks
+Inception blocks
 """
 
-import tensorflow.keras as K
-
+from tensorflow import keras as K
 
 def inception_block(A_prev, filters):
     """
-    A_prev is the output from the previous layer
-    filters is a tuple or list containing F1, F3R, F3,F5R, F5, FPP, respectively:
-
-    F1 is the number of filters in the 1x1 convolution
-    F3R is the number of filters in the 1x1 convolution before the 3x3 convolution
-    F3 is the number of filters in the 3x3 convolution
-    F5R is the number of filters in the 1x1 convolution before the 5x5 convolution
-    F5 is the number of filters in the 5x5 convolution
-    FPP is the number of filters in the 1x1 convolution after the max pooling
-
+    Builds an inception block.
+    
+    Parameters:
+    - A_prev: output from the previous layer
+    - filters: tuple or list of 6 integers:
+        F1: number of filters in 1x1 conv
+        F3R: number of filters in 1x1 conv before 3x3 conv
+        F3: number of filters in 3x3 conv
+        F5R: number of filters in 1x1 conv before 5x5 conv
+        F5: number of filters in 5x5 conv
+        FPP: number of filters in 1x1 conv after max pooling
     """
-    C1 = K.layers.Conv2D(filters=filters[0], kernel_size=(1, 1), padding='same',activation='relu')(A_prev)
-    C11 = K.layers.Conv2D(filters=filters[1], kernel_size=(1, 1), padding='same', activation='relu')(A_prev)
-    C12 = K.layers.Conv2D(filters=filters[3], kernel_size=(1, 1), padding='same',activation='relu')(A_prev)
-    P13 = K.layers.MaxPooling2D(pool_size=(3, 3),strides=(1, 1), padding='same')(A_prev)
-    C2 = K.layers.Conv2D(filters=filters[2], kernel_size=(3, 3), padding='same', activation='relu')(C11)
-    C21 = K.layers.Conv2D(filters=filters[4], kernel_size=(5, 5), padding='same',activation='relu')(C12)
-    C22 = K.layers.Conv2D(filters=filters[5], kernel_size=(1, 1), padding='same',activation='relu')(P13)
-    inception = K.layers.Concatenate(axis=-1)([C1, C2, C21, C22])
-    return inception
+    F1, F3R, F3, F5R, F5, FPP = filters
+    conv_1x1 = K.layers.Conv2D(filters=F1, kernel_size=(1, 1), padding='same', activation='relu')(A_prev)
+    conv_3x3_reduce = K.layers.Conv2D(filters=F3R, kernel_size=(1, 1), padding='same', activation='relu')(A_prev)
+    conv_3x3 = K.layers.Conv2D(filters=F3, kernel_size=(3, 3), padding='same', activation='relu')(conv_3x3_reduce)
+    conv_5x5_reduce = K.layers.Conv2D(filters=F5R, kernel_size=(1, 1), padding='same', activation='relu')(A_prev)
+    conv_5x5 = K.layers.Conv2D(filters=F5, kernel_size=(5, 5), padding='same', activation='relu')(conv_5x5_reduce)
+    max_pool = K.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(A_prev)
+    conv_pool_proj = K.layers.Conv2D(filters=FPP, kernel_size=(1, 1), padding='same', activation='relu')(max_pool)
+    output = K.layers.Concatenate(axis=-1)([conv_1x1, conv_3x3, conv_5x5, conv_pool_proj])
+    return output
