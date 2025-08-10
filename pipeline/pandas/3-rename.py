@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""Program that created a pd.DataFrame from a file"""
+"""
+task 3
+"""
+
 import pandas as pd
 
 
-def from_file(filename, delimiter):
-    """Reads a file and returns a dataframe"""
-    return pd.read_csv(filename, delimiter=delimiter)
+def rename(df):
+    """Takes a pd.DataFrame as input and performs the following"""
+    df_modified = df.copy()
+    df_modified = df_modified.rename(columns={"Timestamp": "Datetime"})
+    df_modified["Datetime"] = pd.to_datetime(df_modified["Datetime"], unit="s")
+    return df_modified[["Datetime", "Close"]]
