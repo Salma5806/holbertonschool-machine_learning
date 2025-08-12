@@ -174,7 +174,7 @@ class Yolo:
 
         return images, image_paths
     def preprocess_images(self, images):
-        """Resize images with cubic interpolation"""
+        """ """
         input_h = self.model.input.shape[1]
         input_w = self.model.input.shape[2]
     
@@ -182,7 +182,7 @@ class Yolo:
         image_shapes = []
     
         for img in images:
-            image_shapes.append(img.shape[:2])  # original height, width
+            image_shapes.append(img.shape[:2])  # hauteur, largeur originales
             resized = cv2.resize(img, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
             normalized = resized.astype(np.float32) / 255.0
             pimages.append(normalized)
@@ -191,3 +191,4 @@ class Yolo:
         image_shapes = np.array(image_shapes)
     
         return pimages, image_shapes
+
