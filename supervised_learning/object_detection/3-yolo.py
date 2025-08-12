@@ -30,11 +30,11 @@ class Yolo:
         Initialize YOLO object.
 
         Args:
-            model_path (str): Path to the Keras Darknet model.
-            classes_path (str): Path to the file containing class names.
+            model_path (str): Path to Keras Darknet model.
+            classes_path (str): Path to file with class names.
             class_t (float): Box score threshold for filtering.
-            nms_t (float): IOU threshold for non-max suppression.
-            anchors (numpy.ndarray): Anchor boxes.
+            nms_t (float): IOU threshold for NMS.
+            anchors (np.ndarray): Anchor boxes.
         """
         self.model = K.models.load_model(model_path, compile=False)
         self.class_names = self._load_classes(classes_path)
@@ -47,7 +47,7 @@ class Yolo:
         Load class names from a file.
 
         Args:
-            classes_path (str): Path to the file with class names.
+            classes_path (str): Path to file with class names.
 
         Returns:
             list: List of class names.
@@ -61,8 +61,8 @@ class Yolo:
         Process Darknet model outputs.
 
         Args:
-            outputs (list): List of numpy.ndarrays with model predictions.
-            image_size (numpy.ndarray): Original image size [h, w].
+            outputs (list): List of numpy.ndarrays with predictions.
+            image_size (np.ndarray): Original image size [h, w].
 
         Returns:
             tuple: (boxes, box_confidences, box_class_probs)
@@ -81,25 +81,21 @@ class Yolo:
             t_w = output[..., 2]
             t_h = output[..., 3]
 
-            # Sigmoid for center coordinates
             cx = 1 / (1 + np.exp(-t_x))
             cy = 1 / (1 + np.exp(-t_y))
 
-            # Grid offsets
             c_x = np.tile(np.arange(gw), gh).reshape(gh, gw)
             c_y = np.tile(np.arange(gh).reshape(-1, 1), gw)
 
             cx = (cx + c_x[..., np.newaxis]) / gw
             cy = (cy + c_y[..., np.newaxis]) / gh
 
-            # Anchors
             anchor_w = self.anchors[i, :, 0]
             anchor_h = self.anchors[i, :, 1]
 
             pw = (np.exp(t_w) * anchor_w) / self.model.input.shape[1]
             ph = (np.exp(t_h) * anchor_h) / self.model.input.shape[2]
 
-            # Convert to (x1, y1, x2, y2)
             x1 = (cx - pw / 2) * img_w
             y1 = (cy - ph / 2) * img_h
             x2 = (cx + pw / 2) * img_w
@@ -108,11 +104,9 @@ class Yolo:
             box = np.stack([x1, y1, x2, y2], axis=-1)
             boxes.append(box)
 
-            # Box confidences
             conf = 1 / (1 + np.exp(-output[..., 4]))
             box_confidences.append(conf[..., np.newaxis])
 
-            # Class probabilities
             class_probs = 1 / (1 + np.exp(-output[..., 5:]))
             box_class_probs.append(class_probs)
 
@@ -123,12 +117,12 @@ class Yolo:
         Filter boxes by score threshold.
 
         Args:
-            boxes (list): List of numpy.ndarrays of shape
-                (grid_h, grid_w, anchor_boxes, 4) processed boxes.
-            box_confidences (list): List of numpy.ndarrays of shape
-                (grid_h, grid_w, anchor_boxes, 1) box confidences.
-            box_class_probs (list): List of numpy.ndarrays of shape
-                (grid_h, grid_w, anchor_boxes, classes) class probabilities.
+            boxes (list): List of np.ndarrays of shape
+                (grid_h, grid_w, anchor_boxes, 4).
+            box_confidences (list): List of np.ndarrays of shape
+                (grid_h, grid_w, anchor_boxes, 1).
+            box_class_probs (list): List of np.ndarrays of shape
+                (grid_h, grid_w, anchor_boxes, classes).
 
         Returns:
             tuple: (filtered_boxes, box_classes, box_scores)
@@ -156,7 +150,7 @@ class Yolo:
 
     def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
         """
-        Apply Non-Maximum Suppression (NMS) to remove overlapping boxes.
+        Apply Non-Maximum Suppression to remove overlapping boxes.
 
         Args:
             filtered_boxes (np.ndarray): Shape (?, 4) boxes.
@@ -208,4 +202,5 @@ class Yolo:
                 order = order[1:][keep]
 
         idxs = np.array(idxs)
+
         return filtered_boxes[idxs], box_classes[idxs], box_scores[idxs]
