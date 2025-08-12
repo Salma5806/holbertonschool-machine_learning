@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
+"""
+YOLO Object Detection Module.
+
+This module defines the Yolo class that loads a pre-trained Darknet model
+in Keras, along with its class names and anchor boxes, and provides the
+necessary attributes for object detection tasks.
+
+Classes:
+    Yolo: Loads the model, class names, and anchors for object detection.
+"""
+
 import tensorflow.keras as K
 import numpy as np
 
 
 class Yolo:
-    """Yolo class"""
+    """YOLO class for object detection using a pre-trained Darknet Keras model."""
 
     model = None
     class_names = None
@@ -14,12 +25,14 @@ class Yolo:
 
     def __init__(self, model_path, classes_path, class_t, nms_t, anchors):
         """
-        model_path is the path to where a Darknet Keras model is stored
-        classes_path is the path to where the list of class names used for the
-        Darknet model, listed in order of index, can be found
-        class_t is a float representing the box score threshold for the
-        initial filtering step
-        nms_t is a float representing the IOU threshold for non-max suppression
+        Initialize YOLO object.
+
+        Args:
+            model_path (str): Path to the Keras Darknet model.
+            classes_path (str): Path to the file containing class names.
+            class_t (float): Box score threshold for initial filtering.
+            nms_t (float): IOU threshold for non-max suppression.
+            anchors (numpy.ndarray): Anchor boxes.
         """
         self.model = K.models.load_model(model_path, compile=False)
         self.class_names = self._load_classes(classes_path)
@@ -28,6 +41,15 @@ class Yolo:
         self.anchors = anchors
 
     def _load_classes(self, classes_path):
+        """
+        Load class names from a file.
+
+        Args:
+            classes_path (str): Path to the file with class names.
+
+        Returns:
+            list: List of class names.
+        """
         with open(classes_path) as file:
             class_names = file.read().splitlines()
         return class_names
