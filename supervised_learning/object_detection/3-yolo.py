@@ -202,5 +202,4 @@ class Yolo:
                 order = order[1:][keep]
 
         idxs = np.array(idxs)
-
         return filtered_boxes[idxs], box_classes[idxs], box_scores[idxs]
