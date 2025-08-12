@@ -15,7 +15,11 @@ import numpy as np
 
 
 class Yolo:
-    """YOLO class for object detection using a pre-trained Darknet Keras model."""
+    """
+    YOLO class for object detection.
+
+    Uses a pre-trained Darknet Keras model.
+    """  
 
     model = None
     class_names = None
