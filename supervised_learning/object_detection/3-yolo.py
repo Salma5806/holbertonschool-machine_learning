@@ -188,9 +188,7 @@ class Yolo:
 
             while len(boxes_c) > 0:
                 # Pick box with highest score
-                idxs.append(
-                    np.where(class_mask)[0][order[0]]
-                )
+                idxs.append(np.where(class_mask)[0][order[0]])
 
                 if len(boxes_c) == 1:
                     break
@@ -211,9 +209,7 @@ class Yolo:
                 rest_area = (rest[:, 2] - rest[:, 0]) * (rest[:, 3] - rest[:, 1])
 
                 union_area = box_area + rest_area - inter_area
-                iou = (
-                    inter_area / union_area
-                )
+                iou = inter_area / union_area
 
                 # Keep boxes with IoU <= threshold
                 keep = np.where(iou <= self.nms_t)[0]
@@ -223,4 +219,5 @@ class Yolo:
                 order = order[1:][keep]
 
         idxs = np.array(idxs)
+
         return (filtered_boxes[idxs], box_classes[idxs], box_scores[idxs])
