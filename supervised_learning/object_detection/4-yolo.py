@@ -143,7 +143,8 @@ class Yolo:
                 inter_area = inter_w * inter_h
 
                 box_area = (box[2] - box[0]) * (box[3] - box[1])
-                rest_area = (rest[:, 2] - rest[:, 0]) * (rest[:, 3] - rest[:, 1])
+                rest_area = ((rest[:, 2] - rest[:, 0]) *
+                             (rest[:, 3] - rest[:, 1]))
 
                 union_area = box_area + rest_area - inter_area
                 iou = inter_area / union_area
