@@ -174,19 +174,24 @@ class Yolo:
         idxs = []
 
         for c in np.unique(box_classes):
+            # Get all boxes and scores for class c
             class_mask = box_classes == c
             boxes_c = filtered_boxes[class_mask]
             scores_c = box_scores[class_mask]
+
+            # Sort by score descending
             order = scores_c.argsort()[::-1]
             boxes_c = boxes_c[order]
             scores_c = scores_c[order]
 
             while len(boxes_c) > 0:
-                idx = order[0]
+                # Pick the box with the highest score
                 idxs.append(np.where(class_mask)[0][order[0]])
 
                 if len(boxes_c) == 1:
                     break
+
+                # Compute IoU of the first box with the rest
                 box = boxes_c[0]
                 rest = boxes_c[1:]
 
@@ -207,6 +212,8 @@ class Yolo:
 
                 # Keep boxes where IoU <= threshold
                 keep = np.where(iou <= self.nms_t)[0]
+
+                # Update boxes_c, scores_c, order to only keep these boxes
                 boxes_c = rest[keep]
                 scores_c = scores_c[1:][keep]
                 order = order[1:][keep]
