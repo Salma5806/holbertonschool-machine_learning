@@ -85,10 +85,12 @@ class Yolo:
 
     def process_outputs(self, outputs, image_size):
         """
-        Process Darknet model outputs to bounding boxes, confidences and class probs.
+        Process Darknet model outputs to bounding boxes, confidences and
+        class probs.
 
         Args:
-            outputs (list): List of np.ndarrays, model outputs for a single image.
+            outputs (list): List of np.ndarrays, model outputs for a single
+                            image.
             image_size (np.ndarray): Original image size [height, width].
 
         Returns:
