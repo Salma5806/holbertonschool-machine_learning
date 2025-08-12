@@ -5,6 +5,7 @@ YOLO Object Detection Module.
 Extends the Yolo class with:
 - process_outputs: decode YOLO model predictions
 - filter_boxes: filter boxes based on score threshold
+- non_max_suppression: filter overlapping boxes using NMS
 """
 
 import numpy as np
@@ -31,7 +32,7 @@ class Yolo:
         Args:
             model_path (str): Path to the Keras Darknet model.
             classes_path (str): Path to the file containing class names.
-            class_t (float): Box score threshold for initial filtering.
+            class_t (float): Box score threshold for filtering.
             nms_t (float): IOU threshold for non-max suppression.
             anchors (numpy.ndarray): Anchor boxes.
         """
@@ -60,9 +61,8 @@ class Yolo:
         Process Darknet model outputs.
 
         Args:
-            outputs (list): List of numpy.ndarrays containing the predictions
-                            from the Darknet model for a single image.
-            image_size (numpy.ndarray): Original image size [image_h, image_w].
+            outputs (list): List of numpy.ndarrays with model predictions.
+            image_size (numpy.ndarray): Original image size [h, w].
 
         Returns:
             tuple: (boxes, box_confidences, box_class_probs)
@@ -81,7 +81,7 @@ class Yolo:
             t_w = output[..., 2]
             t_h = output[..., 3]
 
-            # Sigmoid for center coords
+            # Sigmoid for center coordinates
             cx = 1 / (1 + np.exp(-t_x))
             cy = 1 / (1 + np.exp(-t_y))
 
@@ -124,15 +124,11 @@ class Yolo:
 
         Args:
             boxes (list): List of numpy.ndarrays of shape
-                (grid_height, grid_width, anchor_boxes, 4) containing the
-                processed boundary boxes for each output, respectively.
+                (grid_h, grid_w, anchor_boxes, 4) processed boxes.
             box_confidences (list): List of numpy.ndarrays of shape
-                (grid_height, grid_width, anchor_boxes, 1) containing the
-                processed box confidences for each output, respectively.
+                (grid_h, grid_w, anchor_boxes, 1) box confidences.
             box_class_probs (list): List of numpy.ndarrays of shape
-                (grid_height, grid_width, anchor_boxes, classes) containing
-                the processed box class probabilities for each output,
-                respectively.
+                (grid_h, grid_w, anchor_boxes, classes) class probabilities.
 
         Returns:
             tuple: (filtered_boxes, box_classes, box_scores)
@@ -142,12 +138,10 @@ class Yolo:
         box_scores = []
 
         for b, bc, bcp in zip(boxes, box_confidences, box_class_probs):
-            # Scores for each class
             scores = bc * bcp
             classes = np.argmax(scores, axis=-1)
             class_scores = np.max(scores, axis=-1)
 
-            # Mask for threshold
             mask = class_scores >= self.class_t
 
             filtered_boxes.append(b[mask])
@@ -160,15 +154,14 @@ class Yolo:
 
         return filtered_boxes, box_classes, box_scores
 
-
     def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
         """
-        Applies Non-Maximum Suppression (NMS) to filter overlapping boxes.
+        Apply Non-Maximum Suppression (NMS) to remove overlapping boxes.
 
         Args:
-            filtered_boxes (np.ndarray): Array of shape (?, 4) with boxes.
-            box_classes (np.ndarray): Array of shape (?,) with class numbers.
-            box_scores (np.ndarray): Array of shape (?) with box scores.
+            filtered_boxes (np.ndarray): Shape (?, 4) boxes.
+            box_classes (np.ndarray): Shape (?,) class numbers.
+            box_scores (np.ndarray): Shape (?) box scores.
 
         Returns:
             tuple: (box_predictions, predicted_box_classes, predicted_box_scores)
@@ -176,18 +169,15 @@ class Yolo:
         idxs = []
 
         for c in np.unique(box_classes):
-            # Get boxes and scores for class c
             class_mask = box_classes == c
             boxes_c = filtered_boxes[class_mask]
             scores_c = box_scores[class_mask]
 
-            # Sort scores descending
             order = scores_c.argsort()[::-1]
             boxes_c = boxes_c[order]
             scores_c = scores_c[order]
 
             while len(boxes_c) > 0:
-                # Pick box with highest score
                 idxs.append(np.where(class_mask)[0][order[0]])
 
                 if len(boxes_c) == 1:
@@ -211,7 +201,6 @@ class Yolo:
                 union_area = box_area + rest_area - inter_area
                 iou = inter_area / union_area
 
-                # Keep boxes with IoU <= threshold
                 keep = np.where(iou <= self.nms_t)[0]
 
                 boxes_c = rest[keep]
@@ -219,5 +208,4 @@ class Yolo:
                 order = order[1:][keep]
 
         idxs = np.array(idxs)
-
-        return (filtered_boxes[idxs], box_classes[idxs], box_scores[idxs])
+        return filtered_boxes[idxs], box_classes[idxs], box_scores[idxs]
