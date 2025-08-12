@@ -45,29 +45,24 @@ class Yolo:
         return images, image_paths
 
     def preprocess_images(self, images):
-        """
-        Resize and normalize a list of images for the model.
+    """
+    Resize images with cubic interpolation,
+    normalize pixel values to [0,1],
+    and return preprocessed images and original shapes.
+    """
+    input_h = self.model.input.shape[1]
+    input_w = self.model.input.shape[2]
 
-        Parameters:
-        - images: list of numpy.ndarray images
+    pimages = []
+    image_shapes = []
 
-        Returns:
-        - pimages: numpy.ndarray of shape (ni, input_h, input_w, 3) with preprocessed images
-        - image_shapes: numpy.ndarray of shape (ni, 2) with original (height, width)
-        """
-        input_h = self.model.input.shape[1]
-        input_w = self.model.input.shape[2]
+    for img in images:
+        image_shapes.append(img.shape[:2])  # original height, width
+        resized = cv2.resize(img, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
+        normalized = resized / 255.0
+        pimages.append(normalized)
 
-        pimages = []
-        image_shapes = []
+    pimages = np.array(pimages)
+    image_shapes = np.array(image_shapes)
 
-        for img in images:
-            image_shapes.append(img.shape[:2])  # original height, width
-            resized = cv2.resize(img, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
-            normalized = resized / 255.0
-            pimages.append(normalized)
-
-        pimages = np.array(pimages)
-        image_shapes = np.array(image_shapes)
-
-        return pimages, image_shapes
+    return pimages, image_shapes
