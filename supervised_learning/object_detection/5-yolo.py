@@ -20,16 +20,8 @@ class Yolo:
     Uses a pre-trained Darknet Keras model.
     """
 
-    model = None
-    class_names = None
-    class_t = None
-    nms_t = None
-    anchors = None
-
     def __init__(self, model_path, classes_path, class_t, nms_t, anchors):
-        """
-        Initialize YOLO object.
-        """
+        """Initialize YOLO object."""
         self.model = K.models.load_model(model_path, compile=False)
         self.class_names = self._load_classes(classes_path)
         self.class_t = class_t
@@ -43,20 +35,13 @@ class Yolo:
 
     def process_outputs(self, outputs, image_size):
         """Process Darknet model outputs."""
-        boxes = []
-        box_confidences = []
-        box_class_probs = []
-
+        boxes, box_confidences, box_class_probs = [], [], []
         img_h, img_w = image_size
 
         for i, output in enumerate(outputs):
             gh, gw, anchor_boxes, _ = output.shape
 
-            t_x = output[..., 0]
-            t_y = output[..., 1]
-            t_w = output[..., 2]
-            t_h = output[..., 3]
-
+            t_x, t_y, t_w, t_h = output[..., 0], output[..., 1], output[..., 2], output[..., 3]
             cx = 1 / (1 + np.exp(-t_x))
             cy = 1 / (1 + np.exp(-t_y))
 
@@ -90,9 +75,7 @@ class Yolo:
 
     def filter_boxes(self, boxes, box_confidences, box_class_probs):
         """Filter boxes by score threshold."""
-        filtered_boxes = []
-        box_classes = []
-        box_scores = []
+        filtered_boxes, box_classes, box_scores = [], [], []
 
         for b, bc, bcp in zip(boxes, box_confidences, box_class_probs):
             scores = bc * bcp
@@ -105,11 +88,9 @@ class Yolo:
             box_classes.append(classes[mask])
             box_scores.append(class_scores[mask])
 
-        filtered_boxes = np.concatenate(filtered_boxes, axis=0)
-        box_classes = np.concatenate(box_classes, axis=0)
-        box_scores = np.concatenate(box_scores, axis=0)
-
-        return filtered_boxes, box_classes, box_scores
+        return (np.concatenate(filtered_boxes, axis=0),
+                np.concatenate(box_classes, axis=0),
+                np.concatenate(box_scores, axis=0))
 
     def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
         """Apply NMS to filter overlapping boxes."""
@@ -161,9 +142,7 @@ class Yolo:
     @staticmethod
     def load_images(folder_path):
         """Load all images from a folder."""
-        images = []
-        image_paths = []
-
+        images, image_paths = [], []
         for file_name in os.listdir(folder_path):
             path = os.path.join(folder_path, file_name)
             if os.path.isfile(path):
@@ -171,8 +150,8 @@ class Yolo:
                 if img is not None:
                     images.append(img)
                     image_paths.append(path)
-
         return images, image_paths
+
     def preprocess_images(self, images):
         """
         Preprocess images for the YOLO model.
@@ -199,4 +178,3 @@ class Yolo:
         image_shapes = np.array(image_shapes)
 
         return pimages, image_shapes
-
