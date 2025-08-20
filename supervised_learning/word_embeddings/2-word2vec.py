@@ -5,7 +5,8 @@ import gensim
 
 def word2vec_model(sentences, vector_size=100, min_count=5, window=5,
                    negative=5, cbow=True, epochs=5, seed=0, workers=1):
-    """Trains a Word2Vec model on the given sentences"""
+    """
+    Trains a Word2Vec model on the given sentences"""
     try:
         __import__("random").seed(seed)
     except Exception:
