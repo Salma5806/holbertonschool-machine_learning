@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
 Creates, builds, and trains a Gensim Word2Vec model.
+Only `import gensim` is used, as required.
 """
 
-from gensim.models import Word2Vec
+import gensim
 
 
 def word2vec_model(
@@ -17,8 +18,8 @@ def word2vec_model(
     seed=0,
     workers=1,
 ):
-    """Trains and returns a Word2Vec model"""
-    model = Word2Vec(
+    """Train and return a Word2Vec model"""
+    model = gensim.models.Word2Vec(
         vector_size=vector_size,
         window=window,
         min_count=min_count,
@@ -27,7 +28,7 @@ def word2vec_model(
         seed=seed,
         workers=workers,
     )
-    model.build_vocab(sentences)
+    model.build_vocab(sentences
     model.train(
         sentences,
         total_examples=model.corpus_count,
