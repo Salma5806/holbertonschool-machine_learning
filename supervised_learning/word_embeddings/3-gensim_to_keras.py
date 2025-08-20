@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """task3"""
 
-import tensorflow as tf 
+import tensorflow as tf
 
 
 def gensim_to_keras(model):
@@ -14,5 +14,4 @@ def gensim_to_keras(model):
         weights=[model.wv.vectors],
         trainable=True
     )
-
     return embedding_layer
