@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-""" calculates the shape of a matrix """
+"""
+Task 2
+"""
 
 
 def matrix_shape(matrix):
-    """ return the shape of a matrix """
-    if type(matrix[0]) != list:
-        return [len(matrix)]
-    else:
-        return [len(matrix)] + matrix_shape(matrix[0])
-    
+    """Calculate the shape of a matrix"""
+    shape = []
+    vector = matrix
+    while type(vector) is list:
+        shape.append(len(vector))
+        vector = vector[0]
+    return shape
