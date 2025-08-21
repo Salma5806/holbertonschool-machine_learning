@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-""" function to concatenate two arrays"""
+"""
+Task 6
+"""
 
 
 def cat_arrays(arr1, arr2):
-    """ return a new list with two arrays"""
-    if type(arr1) != list and type(arr2) != list:
-        return None
-    else:
-        new_arr = arr1 + arr2
-        return new_arr
+    """concatenates two arrays"""
+    return (arr1 + arr2)
