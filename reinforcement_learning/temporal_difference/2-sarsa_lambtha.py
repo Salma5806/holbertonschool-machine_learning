@@ -48,4 +48,3 @@ def sarsa_lambtha(
         epsilon = min_epsilon + (initial_epsilon - min_epsilon) * np.exp(-epsilon_decay * episode)
 
     return Q
-
