@@ -1,22 +1,32 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
-a function that load environment of frozen lake that is already pre made
-env from gymnasium
+Monte Carlo prediction algorithm
 """
-import gymnasium as gym
+import numpy as np
 
 
-def load_frozen_lake(desc=None, map_name=None, is_slippery=False, render_mode=None):
-    """
-    desc: list of lists containing a custom description of the map to
-    load for the environment
-    map_name: string containing the pre-made map to load
-    is_slippery: boolean to determine if the ice is slippery
-    """
-    env = gym.make(
-        'FrozenLake-v1',
-        desc=desc,
-        map_name=map_name,
-        is_slippery=is_slippery,
-        render_mode="ansi")
-    return env
+def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
+                alpha=0.1, gamma=0.99):
+    """Performs the Monte Carlo algorithm for estimating state-value function."""
+    n_states = V.shape[0]
+
+    for _ in range(episodes):
+        state, _ = env.reset()
+        episode = []
+
+        for _ in range(max_steps):
+            action = policy(state)
+            next_state, reward, terminated, truncated, _ = env.step(action)
+            episode.append((state, reward))
+            state = next_state
+            if terminated or truncated:
+                break
+        G = 0
+        visited = set()
+        for state, reward in reversed(episode):
+            G = reward + gamma * G
+            if state not in visited:
+                visited.add(state)
+                V[state] += alpha * (G - V[state])
+
+    return V
