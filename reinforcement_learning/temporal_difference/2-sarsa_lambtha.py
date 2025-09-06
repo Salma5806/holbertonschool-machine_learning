@@ -1,44 +1,48 @@
 #!/usr/bin/env python3
 """
-Implementation of SARSA(λ) with eligibility traces
+Implementation of SARSA(λ) with eligibility traces for Reinforcement Learning
 """
 import numpy as np
 
 
-def epsilon_greedy(Q, state, eps):
-    """
-    Select an action using epsilon-greedy exploration.
-    """
-    if np.random.rand() < eps:
+def choose_action(Q, state, epsilon):
+    """Select an action using an epsilon-greedy strategy"""
+    if np.random.rand() < epsilon:  # Explore
         return np.random.randint(Q.shape[1])
-    return np.argmax(Q[state])
+    else:
+        return np.argmax(Q[state])
 
 
-def sarsa_lambtha(env, Q, lambtha,
-                  episodes=5000, max_steps=100,
-                  alpha=0.1, gamma=0.99,
-                  epsilon=1.0, min_epsilon=0.1,
-                  epsilon_decay=0.05):
-    """
-    SARSA(λ) algorithm to estimate Q-values with eligibility traces.
-    """
-    eps0 = epsilon 
+def sarsa_lambda(
+    env,
+    Q,
+    trace_decay,
+    episodes=5000,
+    max_steps=100,
+    alpha=0.1,
+    gamma=0.99,
+    epsilon=1.0,
+    min_epsilon=0.1,
+    epsilon_decay=0.05
+):
+    """Train a Q-table using SARSA(λ) algorithm with eligibility traces"""
+    eps_init = epsilon
 
     for ep in range(episodes):
         state, _ = env.reset()
-        action = epsilon_greedy(Q, state, epsilon)
+        action = choose_action(Q, state, epsilon)
         traces = np.zeros_like(Q)
 
         for _ in range(max_steps):
-            nxt, reward, done, trunc, _ = env.step(action)
-            nxt_action = epsilon_greedy(Q, nxt, epsilon)
-            td_error = reward + gamma * Q[nxt, nxt_action] - Q[state, action]
+            next_state, reward, done, truncated, _ = env.step(action)
+            next_action = choose_action(Q, next_state, epsilon)
+            td_error = reward + gamma * Q[next_state, next_action] - Q[state, action]
             traces[state, action] += 1
             Q += alpha * td_error * traces
-            traces *= gamma * lambtha
-            state, action = nxt, nxt_action
-            if done or trunc:
+            traces *= gamma * trace_decay
+            state, action = next_state, next_action
+            if done or truncated:
                 break
-        epsilon = min_epsilon + (eps0 - min_epsilon) * np.exp(-epsilon_decay * ep)
+        epsilon = min_epsilon + (eps_init - min_epsilon) * np.exp(-epsilon_decay * ep)
 
-     return Q
+    return Q
