@@ -3,12 +3,11 @@
 SARSA(λ) algorithm with eligibility traces for RL
 """
 import numpy as np
-import random
 
 
 def epsilon_greedy(Q, state, epsilon):
     """
-    Selects an action using the epsilon-greedy policy """
+    Select an action using epsilon-greedy policy"""
     if np.random.uniform(0, 1) > epsilon:
         return np.argmax(Q[state])
     else:
@@ -26,7 +25,8 @@ def sarsa_lambtha(
         epsilon=1,
         min_epsilon=0.1,
         epsilon_decay=0.05):
-    """Performs SARSA(λ) with eligibility traces """
+    """
+    Performs SARSA(λ) with eligibility traces"""
     initial_epsilon = epsilon
 
     for episode in range(episodes):
@@ -42,8 +42,10 @@ def sarsa_lambtha(
             Q += alpha * delta * eligibility_traces
             eligibility_traces *= lambtha * gamma
             state, action = new_state, new_action
-
             if terminated or truncated:
                 break
+
         epsilon = min_epsilon + (initial_epsilon - min_epsilon) * np.exp(-epsilon_decay * episode)
+
     return Q
+
