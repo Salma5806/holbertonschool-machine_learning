@@ -1,34 +1,38 @@
 #!/usr/bin/env python3
 """
-Applying the simple
-change from weights
-and state matrix to
-probabilities for the agent
-using softmax function
+Policy Gradient: compute Monte-Carlo policy gradient
 """
 import numpy as np
 
+
 def policy(matrix, weight):
     """
-    - computing the scores to have the
-    unnormalized probability of each action given a certain state
-    - normalize
-    - applying the softmax function to get probabilities
+    Computes the policy with a weight of a matrix.
+
+    matrix: numpy.ndarray of shape (1, n) representing the state
+    weight: numpy.ndarray of shape (n, m) representing the weights
+
+    Returns: numpy.ndarray of shape (1, m) representing action probabilities
     """
-    scores = np.dot(matrix, weight)  # (n_states x 1)
-    # Softmax with numerical stability
-    z = np.exp(scores - np.max(scores))
-    probs = z / np.sum(z)
-    return probs.reshape(1, -1)  # Keep 2D format for compatibility
+    z = np.dot(matrix, weight)
+    exp = np.exp(z - np.max(z))
+    return exp / np.sum(exp, axis=1, keepdims=True)
+
 
 def policy_gradient(state, weight):
     """
-    Computing the needed gradient for
-    the Monte Carlo policy gradient
-    REINFORCE
+    Computes Monte-Carlo policy gradient.
+
+    state: numpy.ndarray of shape (n,) representing the current observation
+    weight: numpy.ndarray of shape (n, m) representing the weights
+
+    Returns: action, gradient
     """
-    probs = policy(state, weight)  # shape (1, n_actions)
-    action = np.random.choice(len(probs[0]), p=probs[0])
-    probs[0, action] -= 1  # derivative of log-softmax
-    grad = np.dot(state.T, probs)
+    state = state.reshape(1, -1)
+    probs = policy(state, weight)
+    probs = probs.flatten()
+    action = np.random.choice(len(probs), p=probs)
+    action_one_hot = np.zeros_like(probs)
+    action_one_hot[action] = 1
+    grad = np.dot(state.T, (action_one_hot - probs).reshape(1, -1))
     return action, grad
