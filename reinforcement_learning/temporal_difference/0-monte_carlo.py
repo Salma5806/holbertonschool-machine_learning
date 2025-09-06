@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
 Monte Carlo prediction algorithm
 """
@@ -30,3 +30,4 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
                 V[state] += alpha * (G - V[state])
 
     return V
+
