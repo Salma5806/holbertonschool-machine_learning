@@ -17,4 +17,3 @@ def flip_image(image):
         tf.Tensor: Horizontally flipped image.
     """
     return tf.image.flip_left_right(image)
-
