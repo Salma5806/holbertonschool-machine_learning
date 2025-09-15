@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
+"""
+Flip image horizontally
+"""
+
 import tensorflow as tf
-"""
-This is a function to flip an image
-"""
+
 
 def flip_image(image):
     """
-    Applying the flipping image
-    augmentation using tenserflow
+    Flips an image horizontally.
+
+    Args:
+        image (tf.Tensor): 3D tensor representing the image.
+
+    Returns:
+        tf.Tensor: Horizontally flipped image.
     """
     return tf.image.flip_left_right(image)
+
