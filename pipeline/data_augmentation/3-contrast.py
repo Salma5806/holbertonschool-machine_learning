@@ -1,12 +1,21 @@
 #!/usr/bin/env python3
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import apply_affine_transform
 """
-This is a function to shear an image
+Randomly adjust the contrast of an image
 """
 
-def shear_image(image, intensity):
-  """ function to shear an image """
-    image = tf.keras.preprocessing.image.img_to_array(image)
-    sheared_image = apply_affine_transform(image, shear=intensity)
-    return tf.convert_to_tensor(sheared_image)
+import tensorflow as tf
+
+
+def change_contrast(image, lower, upper):
+    """
+    Randomly adjusts the contrast of an image.
+
+    Args:
+        image (tf.Tensor): 3D tensor representing the input image.
+        lower (float): Lower bound for the random contrast factor.
+        upper (float): Upper bound for the random contrast factor.
+
+    Returns:
+        tf.Tensor: Contrast-adjusted image.
+    """
+    return tf.image.random_contrast(image, lower, upper)
