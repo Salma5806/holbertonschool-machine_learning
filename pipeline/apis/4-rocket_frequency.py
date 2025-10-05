@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Displays the number of SpaceX launches per rocket, sorted by
-number of launches descending and alphabetically if tied.
+nnumber of launches descending and alphabetically if tied.
 """
 
 import requests
