@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Displays the number of SpaceX launches per rocket, sorted by
-nnumber of launches descending and alphabetically if tied.
+number of launches descending, and alphabetically if tied.
 """
 
 import requests
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     launches = requests.get("https://api.spacexdata.com/v4/launches").json()
     rockets = requests.get("https://api.spacexdata.com/v4/rockets").json()
 
-    # Build a mapping from rocket ID to rocket name
+    # Map rocket IDs to rocket names
     rocket_names = {r["id"]: r["name"] for r in rockets}
 
     # Count launches per rocket
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         if rocket_id in rocket_names:
             rocket_counter[rocket_names[rocket_id]] += 1
 
-    # Sort first by number of launches descending, then by name ascending
+    # Sort by number of launches descending, then by rocket name ascending
     sorted_rockets = sorted(
         rocket_counter.items(),
         key=lambda x: (-x[1], x[0])
